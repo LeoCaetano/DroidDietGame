@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.caetano.leonardo.dietgame">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <application
+        android:name=".DietGameApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".BroadcastReceiverAux"
+            android:label="BroadcastReceiverAux">
+            <intent-filter>
+                <action android:name="ALARME_DISPARADO" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".ServicoRegistra"
+            android:exported="false" />
+
+        <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+        <!--<provider android:authorities="com.facebook.app.FacebookContentProvider236571293501505"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/> -->
+
+        <activity
+            android:name=".ListaHorarioRefeicoesActivity"
+            android:label="@string/title_activity_lista_refeicoes"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NovoHorarioActivity"
+            android:label="@string/title_activity_novo_horario"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ListaRegistroHorarioActivity"
+            android:label="@string/title_activity_lista_registro_horario"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".registro_alimento"
+            android:label="@string/title_activity_registro_alimento"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".BuscaAlimento"
+            android:label="@string/title_activity_busca_alimento"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Seleciona_Alimento"
+            android:label="@string/title_activity_seleciona__alimento"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
+
+</manifest>

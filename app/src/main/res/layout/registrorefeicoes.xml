@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:id="@+id/txtHoraCorreta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refeição"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <TextView
+            android:id="@+id/txtHoraRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="horario"
+            android:textColor="#2F4F4F" />
+
+    </LinearLayout>
+    <ImageView
+        android:id="@+id/imgTrofeu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="100px"
+        android:minWidth="150px"
+        android:scaleType="fitXY"
+        android:layout_alignBottom="@+id/ratingBar1"
+        android:layout_alignParentLeft="true" />
+
+</LinearLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/MenuHome"
+            android:icon="@drawable/home"
+            android:title="Tela Principal" />
+        <item
+            android:id="@+id/MenuNovoAlarme"
+            android:icon="@drawable/alarm_plus"
+            android:title="Novo Alarme de Refeição" />
+        <item
+            android:id="@+id/MenuRefeicoesProgramadas"
+            android:icon="@drawable/list_bulleted_type"
+            android:title="Refeições Programadas" />
+        <item
+            android:id="@+id/MenuRegistrosDoDia"
+            android:icon="@drawable/view_list"
+            android:title="Registros do dia" />
+    </group>
+
+</menu>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">DietGame</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_lista_refeicoes">Lista refeições </string>
+    <string name="title_activity_novo_horario">Novo horário</string>
+    <string name="title_activity_lista_registro_horario">Lista registro de refeições</string>
+    <string name="title_activity_registro_alimento">Registro alimentos</string>
+    <string name="title_activity_busca_alimento">Busca alimento</string>
+    <string name="title_activity_seleciona__alimento">Seleciona alimento</string>
+    <string name="facebook_app_id">236571293501505</string>
+
+</resources>
