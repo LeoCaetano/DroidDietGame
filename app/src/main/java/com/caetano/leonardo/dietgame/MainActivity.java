@@ -22,7 +22,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.caetano.leonardo.bd.BDCalorias;
 import com.caetano.leonardo.bd.BDRegistro;
