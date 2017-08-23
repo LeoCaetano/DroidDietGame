@@ -31,7 +31,7 @@ public class BDRegistro {
 
         Date data = new Date(System.currentTimeMillis());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:MM");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:MM");
         String horaMin = sdf.format(data);
 
         ContentValues valores = new ContentValues();
@@ -45,7 +45,7 @@ public class BDRegistro {
 
         Date data = new Date(System.currentTimeMillis());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String horaMin = sdf.format(data);
 
         ContentValues valores = new ContentValues();
@@ -80,11 +80,9 @@ public class BDRegistro {
         bd.update("registro", valores, "id = ?", new String[]{"" + registro.getId()});
     }
 
-
     public void deletar(Registro registro){
         bd.delete("registro", "id = "+registro.getId(), null);
     }
-
 
     public List<Registro> buscar() throws ParseException {
 
@@ -165,7 +163,7 @@ public class BDRegistro {
         sdf.setLenient(false);
         String dataString = sdf.format(pData);
 
-        Cursor mCount= bd.rawQuery("select count(*) from registro where data_hora_registro = date('" + dataString + "')", null);
+        Cursor mCount= bd.rawQuery("select count(*) from registro where DATE(data_hora_registro) = DATE('" + dataString + "')", null);
         mCount.moveToFirst();
         int count= mCount.getInt(0);
         mCount.close();

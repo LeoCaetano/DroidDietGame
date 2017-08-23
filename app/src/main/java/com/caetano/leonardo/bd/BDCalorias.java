@@ -52,9 +52,10 @@ public class BDCalorias {
 
     public int buscar(){
 
-        Cursor cursor = bd.rawQuery("select sum(caloriaConsumida) from registro_has_alimento regA, registro reg where  regA.registro_id == reg.id and DATE(reg.data_hora_registro) == DATE('now');", null);
+        Cursor cursor = bd.rawQuery("select sum(caloriaConsumida) from registro_has_alimento regA, registro reg where  regA.registro_id = reg.id and DATE(reg.data_hora_registro) = DATE('now');", null);
         cursor.moveToFirst();
         double qtdConsumida = cursor.getDouble(0);
+
         cursor.close();
 
         int finalInt;
