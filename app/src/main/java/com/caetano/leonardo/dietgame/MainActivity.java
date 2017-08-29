@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,21 +47,14 @@ public class MainActivity extends AppCompatActivity
     private BDRegistro bdRegistro;
     private BDCalorias bdCalorias;
 
+    int maxRefeicoes;
+    int progressRefeicoes;
+    int maxCalorias;
+    int progressCalorias;
+
     int dia, mes, ano;
 
-    /*private UiLifecycleHelper uiHelper;
-    private FacebookDialog.Callback callback = new FacebookDialog.Callback(){
-        @Override
-        public void onComplete(PendingCall pendingCall, Bundle data) {
-            boolean success = FacebookDialog.getNativeDialogDidComplete(data);
-            Log.i("Script", "Success? "+success);
-        }
 
-        @Override
-        public void onError(PendingCall pendingCall, Exception error, Bundle data) {
-            Log.i("Script", "ERROR: "+error.toString());
-        }
-    };*/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,22 +144,25 @@ public class MainActivity extends AppCompatActivity
         bdUsuario = new BDUsuario(this);
         bdRegistro = new BDRegistro(this);
         bdCalorias = new BDCalorias(this);
+
+        //declara progressBar
         pgbRefeicoes = (ProgressBar)findViewById(R.id.pgbHorarios);
         pgbCalorias = (ProgressBar)findViewById(R.id.pgbCalorias);
 
+        //declara TXTs
         txtRefeicoes =  (TextView)findViewById(R.id.txtQTDRefeicao);
         txtCalorias = (TextView)findViewById(R.id.txtQTDCalorias);
 
-        int maxRefeicoes = bdUsuario.buscaQtdRefeicoes();
-        int progressRefeicoes = bdRegistro.registrosFeitos(pData);
-
+        //preenche pgb refeições
+        maxRefeicoes = bdUsuario.buscaQtdRefeicoes();
+        progressRefeicoes = bdRegistro.registrosFeitos(pData);
         pgbRefeicoes.setMax(maxRefeicoes);
         pgbRefeicoes.setProgress(progressRefeicoes);
         txtRefeicoes.setText("Refeições feitas hoje "+progressRefeicoes+" de "+maxRefeicoes);
 
-        int maxCalorias = bdUsuario.buscaQtdCalorias();
-        int progressCalorias = bdCalorias.buscar();
-
+        //preenche pgb refeições
+        maxCalorias = bdUsuario.buscaQtdCalorias();
+        progressCalorias = bdCalorias.buscar();
         pgbCalorias.setMax(maxCalorias);
         pgbCalorias.setProgress(progressCalorias);
         txtCalorias.setText("Calorias consumidas hoje "+progressCalorias+" de "+maxCalorias);
@@ -197,6 +194,26 @@ public class MainActivity extends AppCompatActivity
 
         datePickerDialog.show();
 
+    }
+
+    public void calculaMedalha(){
+
+        double rCaloria;
+        double rRefeicoes;
+        double totalFinal;
+
+        rCaloria = (progressCalorias * 100/ maxCalorias);
+        rRefeicoes = (progressRefeicoes * 100/ maxRefeicoes);
+
+        totalFinal = (rCaloria + rRefeicoes) / 2;
+        ImageView img = (ImageView)findViewById(R.id.imgTrodeuMain);
+
+        if(totalFinal <= 30 )
+            img.setImageResource(R.drawable.bronze_grande);
+        else if(totalFinal > 30 && totalFinal <80)
+            img.setImageResource(R.drawable.prata_grande);
+        else
+            img.setImageResource(R.drawable.ouro_grande);
     }
 
 }

@@ -118,14 +118,9 @@ public class registro_alimento extends AppCompatActivity
 
 
         double total = ((Peso * QtdConsumida) * novoAlimento.getQtdCaloria())/100;
-
         bd.inserir(novoAlimento, total);
-
         Toast.makeText(this, "Registrado com sucesso", Toast.LENGTH_LONG).show();
-
         Log.i("IDCadastrado",String.valueOf(total));
-
-
 
     }
 
