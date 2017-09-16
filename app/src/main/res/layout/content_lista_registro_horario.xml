@@ -12,11 +12,22 @@
     tools:context="com.caetano.leonardo.dietgame.ListaRegistroHorarioActivity"
     tools:showIn="@layout/app_bar_lista_registro_horario">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:id="@+id/btnDataLista"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="67dp"
+        android:onClick="MudaData"/>
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lvRegistros"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btnPesquisaData" />
+
 </RelativeLayout>

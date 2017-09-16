@@ -22,7 +22,6 @@ import java.util.List;
 public class BDUsuario {
     private SQLiteDatabase bd;
 
-
     public BDUsuario(Context context){
         BDCore auxBd = new BDCore(context);
         bd = auxBd.getWritableDatabase();
@@ -61,7 +60,6 @@ public class BDUsuario {
         bd.update("usuario", valores, null, null);
     }
 
-
     public int buscaQtdRefeicoes() {
 
         Cursor mCount= bd.rawQuery("select count(*) from horario_refeicao where ativo = 'S'", null);
@@ -71,7 +69,6 @@ public class BDUsuario {
 
         return count;
     }
-
 
     public int buscaQtdCalorias(){
         int qtdCalorias = 0;
@@ -86,6 +83,37 @@ public class BDUsuario {
             }while(cursor.moveToNext());
         }
         return(qtdCalorias);
+    }
+
+    public int consultaLogRefeicoes(Date pData){
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+        String dataString = sdf.format(pData);
+
+        Cursor mCount= bd.rawQuery( "select MAX(valor_novo) from log_registro where log_registro.item_alterado = 'R' DATE(data_alteracao) < DATE('" + dataString + "')", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+
+        return count;
+
+    }
+
+    private void atualizaLogRefeicoes(){
+
+        Date data = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String horaMin = sdf.format(data);
+
+        int valorAntigo = buscaQtdRefeicoes();
+
+        ContentValues valores = new ContentValues();
+        valores.put("valor_anterior", valorAntigo);
+        valores.put("valor_novo", valorAntigo + 1);
+        valores.put("data_alteracao", horaMin);
+        valores.put("item_alterado", "R");
+        bd.insert("usuario", null, valores);
     }
 
 }

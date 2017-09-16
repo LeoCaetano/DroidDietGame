@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.Calendar;
+
 public class BDCore extends SQLiteOpenHelper {
 	private static final String NOME_BD = "DietGameBanco";
 	private static final int VERSAO_BD = 2;
@@ -34,6 +36,14 @@ public class BDCore extends SQLiteOpenHelper {
 						"  registro_id int NOT NULL," +
 						"  Alimento_id int NOT NULL," +
 						"  caloriaConsumida INTEGER NULL);");
+
+		bd.execSQL("CREATE TABLE Log_registro (" +
+				"  id INTEGER NOT NULL," +
+				"  valor_anterior text NOT NULL," +
+				"  valor_novo text NULL," +
+				"  data_alteracao text NULL," +
+				"  item_alterado text NULL," +
+				"  PRIMARY KEY(id));");
 
 	Log.i("Banco:","Inicio dos inserts");
 		bd.execSQL("insert into refeicao(titulo, descricao) values('Café da manhã', 'Bom dia, está na hora do café, não esqueça que essa é refeição mais importante.')");
@@ -638,7 +648,40 @@ public class BDCore extends SQLiteOpenHelper {
 
 
 		bd.execSQL("insert into usuario(qtd_refeicoes_dia, qtd_calorias_dia) values(0, 1000)");
-		Log.i("Banco:","Ffim dos insets");
+
+		funcaoTeste(bd);
+
+	}
+
+	private void funcaoTeste(SQLiteDatabase bd){
+
+		Calendar c = Calendar.getInstance();
+
+		bd.execSQL("Insert into horario_refeicao (horario_consumo, ativo, refeicao_id) Values "+
+					" ('09:00', 'S', '1'),"+
+					" ('12:00', 'S', '2'),"+
+					" ('15:00', 'S', '3'),"+
+					" ('18:00', 'S', '3'),"+
+					" ('21:00', 'S', '4');");
+
+
+		int diaAnterior = c.get(Calendar.DAY_OF_MONTH)-1;
+		int diaAtual = c.get(Calendar.DAY_OF_MONTH);
+
+		Log.i("dias",String.valueOf(diaAnterior) +" - "+ String.valueOf(diaAtual));
+
+		bd.execSQL("Insert into registro (data_hora_registro, horario_refeicao_id, total_calorias) Values "+
+				"('2017-09-"+diaAnterior+" 09:00', 1, 400),"+
+				"('2017-09-"+diaAnterior+" 12:00', 2, 400),"+
+				"('2017-09-"+diaAnterior+" 15:00', 3, 400),"+
+				"('2017-09-"+diaAnterior+" 18:00', 3, 400),"+
+				"('2017-09-"+diaAnterior+" 21:00', 4, 400),"+
+				"('2017-09-"+diaAtual+" 09:30', 1, 400),"+
+				"('2017-09-"+diaAtual+" 12:30', 2, 400),"+
+				"('2017-09-"+diaAtual+" 15:30', 3, 400),"+
+				"('2017-09-"+diaAtual+" 18:30', 3, 400),"+
+				"('2017-09-"+diaAtual+" 21:30', 4, 400);");
+
 	}
 
 	@Override

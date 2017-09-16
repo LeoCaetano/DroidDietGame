@@ -2,6 +2,7 @@ package com.caetano.leonardo.dietgame;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity
 
         Date data = new Date(System.currentTimeMillis());
         carregaProgressBar(data);
+        calculaMedalha();
     }
 
     @Override
@@ -140,6 +142,8 @@ public class MainActivity extends AppCompatActivity
 
     public void carregaProgressBar(Date pData){
 
+        Log.i("Teste",pData.toString());
+
         //=========================construção das progress Bar=========================
         bdUsuario = new BDUsuario(this);
         bdRegistro = new BDRegistro(this);
@@ -168,32 +172,24 @@ public class MainActivity extends AppCompatActivity
         txtCalorias.setText("Calorias consumidas hoje "+progressCalorias+" de "+maxCalorias);
 
         Button btnData = (Button) findViewById(R.id.btnPesquisaData);
-
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         btnData.setText(df.format(pData));
-
     }
 
     public void MudaData(View v){
-        final Calendar c = Calendar.getInstance();
-        dia = c.get(Calendar.DAY_OF_MONTH);
-        mes = c.get(Calendar.MONTH);
-        dia = c.get(Calendar.YEAR);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        initDateTimeData();
+        Calendar cDefault = Calendar.getInstance();
+        cDefault.set(ano, mes, dia);
 
-                Date data= new Date();
-                data.setDate(dayOfMonth);
-                data.setMonth(monthOfYear);
-                data.setYear(year);
-                carregaProgressBar(data);
-            }
-        }, dia, mes, ano);
-
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                dateSetList,
+                cDefault.get(Calendar.YEAR),
+                cDefault.get(Calendar.MONTH),
+                cDefault.get(Calendar.DAY_OF_MONTH)
+        );
         datePickerDialog.show();
-
     }
 
     public void calculaMedalha(){
@@ -215,5 +211,39 @@ public class MainActivity extends AppCompatActivity
         else
             img.setImageResource(R.drawable.ouro_grande);
     }
+
+    public void ChamaAlgumaCoisa(View view){
+        Intent it = new Intent(this, BuscaAlimento.class);
+        startActivity(it);
+    }
+
+    private void initDateTimeData(){
+        if( ano == 0 ){
+            Calendar c = Calendar.getInstance();
+            ano = c.get(Calendar.YEAR);
+            mes = c.get(Calendar.MONTH);
+            dia = c.get(Calendar.DAY_OF_MONTH);
+        }
+    }
+
+    DatePickerDialog.OnDateSetListener dateSetList = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int pYear, int pMonthOfYear, int pDayOfMonth) {
+            ano = pYear;
+            mes = pMonthOfYear;
+            dia = pDayOfMonth;
+
+            Log.i("TesteAno",String.valueOf(ano));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.MONTH, mes);
+            calendar.set(Calendar.YEAR, ano);
+            calendar.set(Calendar.DAY_OF_MONTH,dia);
+            Date date = calendar.getTime();
+            carregaProgressBar(date);
+        }
+    };
+
 
 }

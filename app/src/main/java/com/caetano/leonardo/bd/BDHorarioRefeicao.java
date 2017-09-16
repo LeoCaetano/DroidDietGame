@@ -167,27 +167,5 @@ public class BDHorarioRefeicao {
         return ref;
     }
 
-    public int pegarMaiorId(){
-        int maiorId = 0;
-
-        try{
-            Cursor cursor = bd.rawQuery("SELECT max(ID) from horario_refeicao ",new String [] {});
-            if (cursor != null)
-                if(cursor.moveToFirst())
-                {
-
-                    maiorId= cursor.getInt(0);
-
-                }
-            //  cursor.close();
-
-            return maiorId;
-        }
-        catch(Exception e){
-
-            return -1;
-        }
-
-    }
 
 }

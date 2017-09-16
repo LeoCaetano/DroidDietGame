@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.method.DateTimeKeyListener;
 import android.util.Log;
 
 import com.caetano.leonardo.dietgame.beans.Alimento;
@@ -53,7 +54,6 @@ public class BDRegistro {
         valores.put("horario_refeicao_id", registro.getHorarioRefeicao().getId());
         long id = bd.insert("registro", null, valores);
 
-        //chama inserir nregistro_has_alimento
         inserirHasAlimento(id, registro.getAlimentosRefeicao());
         Log.i("Banco", horaMin);
     }
@@ -120,20 +120,24 @@ public class BDRegistro {
         return(list);
     }
 
-    public int buscaRefeicoes() throws ParseException {
+    public List<Registro> buscaRefeicoesPorData(Date pData) throws ParseException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-DD HH:MM");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setLenient(false);
-
+        String dataString = sdf.format(pData);
+        Log.i("Busca","inicio");
         List<Registro> list = new ArrayList<Registro>();
+
         String[] colunas = new String[]{"id", "data_hora_registro", "horario_refeicao_id"};
+        String selection = "DATE(data_hora_registro) = ?";
+        String[] selectionArgs = {"DATE('" + dataString + "')"};
+        Cursor cursor = bd.query("registro", colunas, selection, selectionArgs, null, null, "id ASC");
 
-        Cursor cursor = bd.query("registro", colunas, null, null, null, null, "id ASC");
 
-        Log.i("colunas",colunas[0].toString());
+        Log.i("Busca", String.valueOf(selection)+ String.valueOf(selectionArgs[0]) );
+
         if(cursor.getCount() > 0){
             cursor.moveToFirst();
-            Log.i("Inicio","Busca");
 
             do{
 
@@ -153,8 +157,7 @@ public class BDRegistro {
             }while(cursor.moveToNext());
         }
 
-        int qtd = list.size();
-        return qtd;
+        return(list);
     }
 
     public int registrosFeitos(Date pData){

@@ -8,6 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -41,10 +42,10 @@ public class BuscaAlimento extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent intent = getIntent();
+        /*Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         HorarioRefeicaoNovo = (HorarioRefeicao) bundle.getSerializable("horario");
-
+*/
     }
 
     public void BuscaAlimentos(View view){
@@ -66,21 +67,6 @@ public class BuscaAlimento extends AppCompatActivity {
 
     }
 
-    public void ConfirmaRegistro(View view){
-        Registro registroNovo = new Registro();
-        registroNovo.setHorarioRefeicao(HorarioRefeicaoNovo);
-        registroNovo.setAlimentosRefeicao(alimentosSelecionados);
-
-        BDRegistro bd = new BDRegistro(this);
-        bd.inserirNovo(registroNovo);
-
-        Intent inten = new Intent();
-
-        Toast.makeText(this, "Registrado com sucesso", Toast.LENGTH_LONG).show();
-        Intent it = new Intent(this, MainActivity.class);
-        startActivity(it);
-    }
-
     protected void onActivityResult(int codigoTela, int resultado, Intent intent){
 
         if(codigoTela == TELA_LISTAGEM){
@@ -90,6 +76,7 @@ public class BuscaAlimento extends AppCompatActivity {
                 Alimento alimentoPraAdicionar = (Alimento) params.getSerializable("objetoAlimento");
                 alimentosSelecionados.add(alimentoPraAdicionar);
                 Toast.makeText(this, "Alimento Adicionado", Toast.LENGTH_LONG).show();
+                AtualizaTexto();
 
             }
         }
@@ -131,6 +118,7 @@ public class BuscaAlimento extends AppCompatActivity {
                 alimentosSelecionados.remove(deletePosition);
                 adapter.notifyDataSetChanged();
                 adapter.notifyDataSetInvalidated();
+                AtualizaTexto();
             }
         });
         alert.setNegativeButton("Não", new DialogInterface.OnClickListener() {
@@ -141,7 +129,22 @@ public class BuscaAlimento extends AppCompatActivity {
             }
         });
         alert.show();
-        AtualizaTexto();
+
+    }
+
+    public void ConfirmaRegistro(View view){
+        Registro registroNovo = new Registro();
+        registroNovo.setHorarioRefeicao(HorarioRefeicaoNovo);
+        registroNovo.setAlimentosRefeicao(alimentosSelecionados);
+
+        BDRegistro bd = new BDRegistro(this);
+        bd.inserirNovo(registroNovo);
+
+        Intent inten = new Intent();
+
+        Toast.makeText(this, "Registrado com sucesso", Toast.LENGTH_LONG).show();
+        Intent it = new Intent(this, MainActivity.class);
+        startActivity(it);
     }
 
     public void AtualizaTexto(){
@@ -153,6 +156,7 @@ public class BuscaAlimento extends AppCompatActivity {
 
         TextView txtTotalCaloria = (TextView)findViewById(R.id.txtTotal);
         txtTotalCaloria.setText("Total de Calorias na refeição: "+String.valueOf(totalCaloria));
+        Log.i("verificador", "verificador");
 
     }
 

@@ -1,5 +1,6 @@
 package com.caetano.leonardo.dietgame;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ListView;
 
 import com.caetano.leonardo.bd.BDHorarioRefeicao;
@@ -23,12 +26,18 @@ import com.caetano.leonardo.dietgame.beans.HorarioRefeicaoAdapter;
 import com.caetano.leonardo.dietgame.beans.Registro;
 import com.caetano.leonardo.dietgame.beans.RegistroAdapter;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class ListaRegistroHorarioActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    int dia, mes, ano;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,19 +55,9 @@ public class ListaRegistroHorarioActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Date data = new Date(System.currentTimeMillis());
 
-        BDRegistro bd = new BDRegistro(this);
-        List<Registro> lista = null;
-        try {
-            lista = bd.buscar();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<Registro> listaArray = new ArrayList<Registro>();
-        listaArray.addAll(lista);
-        ListView lv = (ListView) findViewById(R.id.lvRegistros);
-        lv.setAdapter(new RegistroAdapter(this, listaArray));
+        carregaRefeicoes(data);
 
     }
 
@@ -117,4 +116,80 @@ public class ListaRegistroHorarioActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    protected void onResume(){
+        super.onResume();
+    }
+
+    public void MudaData(View v){
+        initDateTimeData();
+        Calendar cDefault = Calendar.getInstance();
+        cDefault.set(ano, mes, dia);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                dateSetList,
+                cDefault.get(Calendar.YEAR),
+                cDefault.get(Calendar.MONTH),
+                cDefault.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    public void carregaRefeicoes(Date data){
+
+        BDRegistro bd = new BDRegistro(this);
+        List<Registro> lista = null;
+        try {
+            lista = bd.buscaRefeicoesPorData(data);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        ArrayList<Registro> listaArray = new ArrayList<Registro>();
+        listaArray.addAll(lista);
+
+        if(lista.size() <= 0)
+            return;
+
+        ListView lv = (ListView) findViewById(R.id.lvRegistros);
+        lv.setAdapter(new RegistroAdapter(this, listaArray));
+
+        Button btnData = (Button) findViewById(R.id.btnDataLista);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        btnData.setText(df.format(data));
+
+        Log.i("carregaLista:","Fim");
+
+    }
+
+    private void initDateTimeData(){
+        if( ano == 0 ){
+            Calendar c = Calendar.getInstance();
+            ano = c.get(Calendar.YEAR);
+            mes = c.get(Calendar.MONTH);
+            dia = c.get(Calendar.DAY_OF_MONTH);
+        }
+    }
+
+    DatePickerDialog.OnDateSetListener dateSetList = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int pYear, int pMonthOfYear, int pDayOfMonth) {
+            ano = pYear;
+            mes = pMonthOfYear;
+            dia = pDayOfMonth;
+
+            Log.i("TesteAno",String.valueOf(ano));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.MONTH, mes);
+            calendar.set(Calendar.YEAR, ano);
+            calendar.set(Calendar.DAY_OF_MONTH,dia);
+            Date date = calendar.getTime();
+            carregaRefeicoes(date);
+        }
+    };
+
 }
