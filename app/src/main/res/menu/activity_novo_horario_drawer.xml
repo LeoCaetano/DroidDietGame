@@ -18,6 +18,10 @@
             android:id="@+id/MenuRegistrosDoDia"
             android:icon="@drawable/view_list"
             android:title="Registros do dia" />
-    </group>
+        <item
+            android:id="@+id/MenuRelatorio"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Relatório" />
+</group>
 
 </menu>

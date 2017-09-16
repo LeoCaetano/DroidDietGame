@@ -150,6 +150,9 @@ public class NovoHorarioActivity extends AppCompatActivity
         } else if(id == R.id.MenuHome){
             Intent it = new Intent(this, MainActivity.class);
             startActivity(it);
+        }else if(id == R.id.MenuRelatorio) {
+            Intent it = new Intent(this, Relatorio.class);
+            startActivity(it);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

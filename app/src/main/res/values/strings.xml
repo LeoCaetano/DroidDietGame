@@ -12,5 +12,6 @@
     <string name="title_activity_busca_alimento">Busca alimento</string>
     <string name="title_activity_seleciona__alimento">Seleciona alimento</string>
     <string name="facebook_app_id">236571293501505</string>
+    <string name="title_activity_relatorio">Relatório</string>
 
 </resources>
