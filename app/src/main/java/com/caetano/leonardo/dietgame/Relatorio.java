@@ -1,9 +1,11 @@
 package com.caetano.leonardo.dietgame;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,16 +15,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import com.caetano.leonardo.bd.BDRefeicao;
+import com.caetano.leonardo.dietgame.beans.Refeicao;
+
+import java.util.Calendar;
+import java.util.Date;
 
 public class Relatorio extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
+    private Date DataInicio;
+    private Date DataFim;
     private LinearLayout linData = null;
-    private LinearLayout linMes = null;
+    private LinearLayout lnResumo = null;
+    private Button btnPesquisa = null;
+    private TextView txtTotalCalorias, txtMediaCalorias, txtMediaRefeicoes;
+    int dia, mes, ano;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +57,16 @@ public class Relatorio extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+
+    }
+
+    protected void onResume(){
+        super.onResume();
+        linData = (LinearLayout)findViewById(R.id.lnData);
+        btnPesquisa = (Button) findViewById(R.id.btnGeraRelatorio);
+
+        linData.setVisibility(View.INVISIBLE);
+        btnPesquisa.setVisibility(View.INVISIBLE);
 
     }
 
@@ -106,7 +133,7 @@ public class Relatorio extends AppCompatActivity
         boolean checked = ((RadioButton) view).isChecked();
 
         linData = (LinearLayout)findViewById(R.id.lnData);
-        linMes =  (LinearLayout)findViewById(R.id.lnMes);
+        btnPesquisa = (Button)findViewById(R.id.btnGeraRelatorio);
 
         switch (view.getId()){
             case R.id.radioData:
@@ -125,17 +152,103 @@ public class Relatorio extends AppCompatActivity
 
     public void habilitaData(View view){
         linData.setVisibility(View.VISIBLE);
-        linMes.setVisibility(View.INVISIBLE);
+        btnPesquisa.setVisibility(view.VISIBLE);
     }
 
     public void habilitaMes(View view){
         linData.setVisibility(View.INVISIBLE);
-        linMes.setVisibility(View.VISIBLE);
+        btnPesquisa.setVisibility(view.INVISIBLE);
     }
 
     public void habilitaSemana(View view){
         linData.setVisibility(View.INVISIBLE);
-        linMes.setVisibility(View.INVISIBLE);
+        btnPesquisa.setVisibility(view.INVISIBLE);
     }
+
+    public void MudaDataInicio(View v){
+
+        initDateTimeData();
+        Calendar cDefault = Calendar.getInstance();
+        cDefault.set(ano, mes, dia);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                dateListInicio,
+                cDefault.get(Calendar.YEAR),
+                cDefault.get(Calendar.MONTH),
+                cDefault.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    public void MudaDataFim(View v){
+
+        initDateTimeData();
+        Calendar cDefault = Calendar.getInstance();
+        cDefault.set(ano, mes, dia);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                dateListFim,
+                cDefault.get(Calendar.YEAR),
+                cDefault.get(Calendar.MONTH),
+                cDefault.get(Calendar.DAY_OF_MONTH)
+        );
+        datePickerDialog.show();
+    }
+
+    private void initDateTimeData(){
+            Calendar c = Calendar.getInstance();
+            ano = c.get(Calendar.YEAR);
+            mes = c.get(Calendar.MONTH);
+            dia = c.get(Calendar.DAY_OF_MONTH);
+    }
+
+
+    public void PesquisaRelatorio(View view){
+        txtTotalCalorias = (TextView)findViewById(R.id.txtTotalCalorias);
+        txtMediaCalorias = (TextView)findViewById(R.id.txtMediaCalorias);
+        txtMediaRefeicoes = (TextView)findViewById(R.id.txtMediaRefeicoes);
+
+        txtTotalCalorias.setText("Total de calorias consumidas no período: "+3500);
+        txtMediaCalorias.setText("Média de calorias consumidas por dia no período: "+ 1000);
+        txtMediaRefeicoes.setText("Média de refeições feitas por dia, durante o período: "+ 4);
+    }
+
+    DatePickerDialog.OnDateSetListener dateListInicio = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int pYear, int pMonthOfYear, int pDayOfMonth) {
+            ano = pYear;
+            mes = pMonthOfYear;
+            dia = pDayOfMonth;
+
+            Log.i("TesteAno",String.valueOf(ano));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.MONTH, mes);
+            calendar.set(Calendar.YEAR, ano);
+            calendar.set(Calendar.DAY_OF_MONTH,dia);
+            DataInicio = calendar.getTime();
+        }
+    };
+
+    DatePickerDialog.OnDateSetListener dateListFim = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int pYear, int pMonthOfYear, int pDayOfMonth) {
+            ano = pYear;
+            mes = pMonthOfYear;
+            dia = pDayOfMonth;
+
+            Log.i("TesteAno",String.valueOf(ano));
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.clear();
+            calendar.set(Calendar.MONTH, mes);
+            calendar.set(Calendar.YEAR, ano);
+            calendar.set(Calendar.DAY_OF_MONTH,dia);
+            DataFim = calendar.getTime();
+        }
+    };
 
 }

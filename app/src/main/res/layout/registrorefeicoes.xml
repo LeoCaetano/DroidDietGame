@@ -32,7 +32,6 @@
         android:minHeight="100px"
         android:minWidth="150px"
         android:scaleType="fitXY"
-        android:layout_alignBottom="@+id/ratingBar1"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignBottom="@+id/ratingBar1"/>
 
 </LinearLayout>

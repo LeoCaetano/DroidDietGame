@@ -122,6 +122,8 @@ public class ListaRegistroHorarioActivity extends AppCompatActivity
 
     protected void onResume(){
         super.onResume();
+        Date data = new Date(System.currentTimeMillis());
+        carregaRefeicoes(data);
     }
 
     public void MudaData(View v){
@@ -153,15 +155,15 @@ public class ListaRegistroHorarioActivity extends AppCompatActivity
         ArrayList<Registro> listaArray = new ArrayList<Registro>();
         listaArray.addAll(lista);
 
+        Button btnData = (Button) findViewById(R.id.btnDataLista);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        btnData.setText(df.format(data));
+
         if(lista.size() <= 0)
             return;
 
         ListView lv = (ListView) findViewById(R.id.lvRegistros);
         lv.setAdapter(new RegistroAdapter(this, listaArray));
-
-        Button btnData = (Button) findViewById(R.id.btnDataLista);
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        btnData.setText(df.format(data));
 
         Log.i("carregaLista:","Fim");
 

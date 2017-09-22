@@ -167,8 +167,8 @@ public class MainActivity extends AppCompatActivity
         txtRefeicoes.setText("Refeições feitas hoje "+progressRefeicoes+" de "+maxRefeicoes);
 
         //preenche pgb refeições
-        maxCalorias = bdUsuario.buscaQtdCalorias();
-        progressCalorias = bdCalorias.buscar();
+        maxCalorias = 2500;//bdUsuario.buscaQtdCalorias();
+        progressCalorias = 1200;//bdCalorias.buscar();
         pgbCalorias.setMax(maxCalorias);
         pgbCalorias.setProgress(progressCalorias);
         txtCalorias.setText("Calorias consumidas hoje "+progressCalorias+" de "+maxCalorias);
@@ -246,6 +246,4 @@ public class MainActivity extends AppCompatActivity
             carregaProgressBar(date);
         }
     };
-
-
 }

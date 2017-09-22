@@ -128,13 +128,8 @@ public class BDRegistro {
         Log.i("Busca","inicio");
         List<Registro> list = new ArrayList<Registro>();
 
-        String[] colunas = new String[]{"id", "data_hora_registro", "horario_refeicao_id"};
-        String selection = "DATE(data_hora_registro) = ?";
-        String[] selectionArgs = {"DATE('" + dataString + "')"};
-        Cursor cursor = bd.query("registro", colunas, selection, selectionArgs, null, null, "id ASC");
+        Cursor cursor= bd.rawQuery("select * from registro where DATE(data_hora_registro) = DATE('" + dataString + "')", null);
 
-
-        Log.i("Busca", String.valueOf(selection)+ String.valueOf(selectionArgs[0]) );
 
         if(cursor.getCount() > 0){
             cursor.moveToFirst();
@@ -156,7 +151,7 @@ public class BDRegistro {
 
             }while(cursor.moveToNext());
         }
-
+        Log.i("Busca",String.valueOf(list.size()));
         return(list);
     }
 
