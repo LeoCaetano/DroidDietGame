@@ -74,8 +74,12 @@ public class RegistroAdapter extends BaseAdapter {
 
         ImageView img = (ImageView) layout.findViewById(R.id.imgTrofeu);
 
-        long horaRegistro = registro.getDataHoraRegistro().getTime();
-        long horaRefeicao = registro.getHorarioRefeicao().getHorarioConsumo().getTime();
+        long horaRegistro = registro.getDataHoraRegistro().getHours();
+        horaRegistro = (horaRegistro * 60) + registro.getDataHoraRegistro().getMinutes();
+
+
+        long horaRefeicao = registro.getHorarioRefeicao().getHorarioConsumo().getHours();
+        horaRefeicao = (horaRefeicao* 60) + registro.getHorarioRefeicao().getHorarioConsumo().getMinutes();
 
         long horaFinal = ComparaHora(horaRefeicao, horaRegistro);
 
@@ -99,9 +103,9 @@ public class RegistroAdapter extends BaseAdapter {
         long diffMinutos;
 
         if(HoraDoBanco > HoraDoRegistro)
-            diffMinutos = (HoraDoBanco - HoraDoRegistro) / (60 * 1000);
+            diffMinutos = HoraDoBanco - HoraDoRegistro;
         else
-            diffMinutos = (HoraDoRegistro - HoraDoBanco) / (60 * 1000);
+            diffMinutos = HoraDoRegistro - HoraDoBanco;
 
         return  diffMinutos;
     }

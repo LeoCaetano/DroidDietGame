@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.caetano.leonardo.bd.BDRefeicao;
+import com.caetano.leonardo.bd.BDRelatorio;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
 
 import java.util.Calendar;
@@ -158,11 +159,44 @@ public class Relatorio extends AppCompatActivity
     public void habilitaMes(View view){
         linData.setVisibility(View.INVISIBLE);
         btnPesquisa.setVisibility(view.INVISIBLE);
+
+        initDateTimeData();
+
+        //Monta Calendar a ser utilizado
+        Calendar calendar= Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.MONTH, mes);
+        calendar.set(Calendar.YEAR, ano);
+        calendar.set(Calendar.DAY_OF_MONTH,dia);
+        DataFim = calendar.getTime();
+
+        calendar.set(Calendar.DAY_OF_MONTH,01);
+        DataInicio = calendar.getTime();
+
+        PesquisaRelatorio(view, DataInicio, DataFim);
+
     }
 
     public void habilitaSemana(View view){
         linData.setVisibility(View.INVISIBLE);
         btnPesquisa.setVisibility(view.INVISIBLE);
+
+        initDateTimeData();
+
+        //Monta Calendar a ser utilizado
+        Calendar calendar= Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.MONTH, mes);
+        calendar.set(Calendar.YEAR, ano);
+        calendar.set(Calendar.DAY_OF_MONTH,dia);
+        DataFim = calendar.getTime();
+
+
+        int DiaAtualDaSemana = (calendar.get(Calendar.DAY_OF_WEEK)-1);
+        calendar.set(Calendar.DAY_OF_MONTH,dia-DiaAtualDaSemana);
+        DataInicio = calendar.getTime();
+
+        PesquisaRelatorio(view, DataInicio, DataFim);
     }
 
     public void MudaDataInicio(View v){
@@ -205,14 +239,28 @@ public class Relatorio extends AppCompatActivity
     }
 
 
-    public void PesquisaRelatorio(View view){
+    public void PesquisaRelatorio(View view, Date pDataInicio, Date pDateFim){
         txtTotalCalorias = (TextView)findViewById(R.id.txtTotalCalorias);
         txtMediaCalorias = (TextView)findViewById(R.id.txtMediaCalorias);
         txtMediaRefeicoes = (TextView)findViewById(R.id.txtMediaRefeicoes);
 
-        txtTotalCalorias.setText("Total de calorias consumidas no período: "+3500);
-        txtMediaCalorias.setText("Média de calorias consumidas por dia no período: "+ 1000);
-        txtMediaRefeicoes.setText("Média de refeições feitas por dia, durante o período: "+ 4);
+        BDRelatorio bd = new BDRelatorio(this);
+
+        txtTotalCalorias.setText("Total de calorias consumidas no período: "+bd.totalCaloriasConsumidasPorData(pDataInicio,pDateFim));
+        txtMediaCalorias.setText("Média de calorias consumidas por dia: "+ bd.mediaCaloriasPorData(pDataInicio,pDateFim));
+        txtMediaRefeicoes.setText("Média de refeições feitas por dia, durante o período: "+ bd.mediaRefeicoesPorData(pDataInicio, pDateFim));
+    }
+
+    public void PesquisaRelatorioData(View view){
+        txtTotalCalorias = (TextView)findViewById(R.id.txtTotalCalorias);
+        txtMediaCalorias = (TextView)findViewById(R.id.txtMediaCalorias);
+        txtMediaRefeicoes = (TextView)findViewById(R.id.txtMediaRefeicoes);
+
+        BDRelatorio bd = new BDRelatorio(this);
+
+        txtTotalCalorias.setText("Total de calorias consumidas no período: "+bd.totalCaloriasConsumidasPorData(DataInicio,DataFim));
+        txtMediaCalorias.setText("Média de calorias consumidas por dia: "+ bd.mediaCaloriasPorData(DataInicio,DataFim));
+        txtMediaRefeicoes.setText("Média de refeições feitas por dia, durante o período: "+ bd.mediaRefeicoesPorData(DataInicio, DataFim));
     }
 
     DatePickerDialog.OnDateSetListener dateListInicio = new DatePickerDialog.OnDateSetListener() {

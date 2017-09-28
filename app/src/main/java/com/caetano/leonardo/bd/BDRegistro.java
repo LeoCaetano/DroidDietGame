@@ -122,7 +122,7 @@ public class BDRegistro {
 
     public List<Registro> buscaRefeicoesPorData(Date pData) throws ParseException {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         sdf.setLenient(false);
         String dataString = sdf.format(pData);
         Log.i("Busca","inicio");

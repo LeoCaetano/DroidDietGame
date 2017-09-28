@@ -150,7 +150,6 @@ public class BDHorarioRefeicao {
         String[] colunas = new String[]{"id", "horario_consumo", "refeicao_id"};
 
         Cursor cursor = bd.query("horario_refeicao", colunas, "id=?", argumentos, null, null, null, null);
-        Log.i("completoSQL",cursor.toString());
         HorarioRefeicao ref = new HorarioRefeicao();
 
         if(cursor.getCount() > 0) {

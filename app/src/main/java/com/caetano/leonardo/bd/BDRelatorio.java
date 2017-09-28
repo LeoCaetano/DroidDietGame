@@ -46,7 +46,7 @@ public class BDRelatorio {
         int totalDias = data2.get(Calendar.DAY_OF_YEAR) -
                 data1.get(Calendar.DAY_OF_YEAR);
 
-        Cursor mCount= bd.rawQuery("select count(*) from registro where DATE(data_hora_registro) >= DATE('" + dataInicio + "') BETWEEN DATE(data_hora_registro) <= DATE('" + dataFim+ "')", null);
+        Cursor mCount= bd.rawQuery("select count(*) from registro where DATE(data_hora_registro) BETWEEN ('" + dataInicio + "') and DATE('" + dataFim+ "')", null);
         mCount.moveToFirst();
         int count= mCount.getInt(0);
         mCount.close();
@@ -76,7 +76,7 @@ public class BDRelatorio {
 
         int totalDias = data2.get(Calendar.DAY_OF_YEAR) - data1.get(Calendar.DAY_OF_YEAR);
 
-        Cursor mCount= bd.rawQuery("select sum(caloriaConsumida) from registro_has_alimento regA, registro reg where  regA.registro_id = reg.id and DATE(reg.data_hora_registro) >= DATE('" + dataInicio + "') BETWEEN DATE(reg.data_hora_registro) <= DATE('" + dataFim+ "')", null);
+        Cursor mCount= bd.rawQuery("select sum(total_calorias) from registro reg where DATE(reg.data_hora_registro) BETWEEN DATE('" + dataInicio + "') and DATE('" + dataFim+ "')", null);
         mCount.moveToFirst();
         int count= mCount.getInt(0);
         mCount.close();
@@ -90,7 +90,7 @@ public class BDRelatorio {
         String dataInicio = sdf.format(pDataInicio);
         String dataFim = sdf.format(pDataFim);
 
-        Cursor cursor = bd.rawQuery("select sum(caloriaConsumida) from registro_has_alimento regA, registro reg where  regA.registro_id = reg.id and DATE(reg.data_hora_registro) >= DATE('" + dataInicio + "') BETWEEN DATE(reg.data_hora_registro) <= DATE('" + dataFim+ "')", null);
+        Cursor cursor = bd.rawQuery("select sum(total_calorias) from registro reg where DATE(reg.data_hora_registro) BETWEEN DATE('" + dataInicio + "') AND DATE('" + dataFim+ "')", null);
         cursor.moveToFirst();
         double qtdConsumida = cursor.getDouble(0);
 
