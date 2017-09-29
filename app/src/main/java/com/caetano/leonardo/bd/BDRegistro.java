@@ -52,6 +52,7 @@ public class BDRegistro {
         ContentValues valores = new ContentValues();
         valores.put("data_hora_registro", horaMin);
         valores.put("horario_refeicao_id", registro.getHorarioRefeicao().getId());
+        valores.put("total_calorias", registro.getTotalConsumido());
         long id = bd.insert("registro", null, valores);
 
         inserirHasAlimento(id, registro.getAlimentosRefeicao());

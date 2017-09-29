@@ -34,6 +34,7 @@ public class BuscaAlimento extends AppCompatActivity {
     public HorarioRefeicao HorarioRefeicaoNovo;
     public ListView lv;
     public AlimentoAdapter adapter;
+    double totalCaloria = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +43,10 @@ public class BuscaAlimento extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*Intent intent = getIntent();
+        Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         HorarioRefeicaoNovo = (HorarioRefeicao) bundle.getSerializable("horario");
-*/
+
     }
 
     public void BuscaAlimentos(View view){
@@ -135,6 +136,7 @@ public class BuscaAlimento extends AppCompatActivity {
     public void ConfirmaRegistro(View view){
         Registro registroNovo = new Registro();
         registroNovo.setHorarioRefeicao(HorarioRefeicaoNovo);
+        registroNovo.setTotalConsumido(totalCaloria);
         registroNovo.setAlimentosRefeicao(alimentosSelecionados);
 
         BDRegistro bd = new BDRegistro(this);
@@ -148,7 +150,7 @@ public class BuscaAlimento extends AppCompatActivity {
     }
 
     public void AtualizaTexto(){
-        double totalCaloria = 0;
+
 
         for (Alimento item : alimentosSelecionados ) {
             totalCaloria += item.getTotalRefeicao();

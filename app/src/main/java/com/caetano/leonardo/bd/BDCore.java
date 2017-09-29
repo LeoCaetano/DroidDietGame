@@ -647,7 +647,7 @@ public class BDCore extends SQLiteOpenHelper {
 				"(597,'Noz, crua',620)");
 
 
-		bd.execSQL("insert into usuario(qtd_refeicoes_dia, qtd_calorias_dia) values(0, 1000)");
+		bd.execSQL("insert into usuario(qtd_refeicoes_dia, qtd_calorias_dia) values(0, 3000)");
 
 		funcaoTeste(bd);
 

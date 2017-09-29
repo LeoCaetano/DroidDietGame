@@ -70,4 +70,28 @@ public class BDCalorias {
 
     }
 
+    public int buscaPorData(Date pData){
+
+        SimpleDateFormat sdf;
+        sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dataString = sdf.format(pData);
+
+        Cursor cursor = bd.rawQuery("select sum(total_calorias) from registro reg where DATE(reg.data_hora_registro) = DATE('" + dataString+ "')", null);
+        cursor.moveToFirst();
+        double qtdConsumida = cursor.getDouble(0);
+
+        cursor.close();
+
+        int finalInt;
+        if (qtdConsumida>0) {
+            finalInt= (int) qtdConsumida;
+
+            return finalInt;
+        }
+        else{
+            return 0;
+        }
+
+    }
+
 }

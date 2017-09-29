@@ -12,6 +12,16 @@ public class Registro {
     private HorarioRefeicao horarioRefeicao;
     private ArrayList<Alimento> alimentosRefeicao = new ArrayList<>();
 
+    public double getTotalConsumido() {
+        return totalConsumido;
+    }
+
+    public void setTotalConsumido(double totalConsumido) {
+        this.totalConsumido = totalConsumido;
+    }
+
+    private double totalConsumido;
+
     public Registro(int pId, Date pDataHoraRegistro, HorarioRefeicao pHorarioRefeicao) {
         Id = pId;
         this.dataHoraRegistro = pDataHoraRegistro;
