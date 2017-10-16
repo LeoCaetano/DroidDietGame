@@ -30,6 +30,7 @@ import com.caetano.leonardo.bd.BDRegistro;
 import com.caetano.leonardo.bd.BDUsuario;
 import com.caetano.leonardo.dietgame.beans.HorarioRefeicao;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
+import com.facebook.FacebookSdk;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -59,7 +60,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,6 +75,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
 
     }
 
