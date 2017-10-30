@@ -4,10 +4,19 @@ import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -24,18 +33,40 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.caetano.leonardo.bd.BDCalorias;
 import com.caetano.leonardo.bd.BDRegistro;
 import com.caetano.leonardo.bd.BDUsuario;
 import com.caetano.leonardo.dietgame.beans.HorarioRefeicao;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
-import com.facebook.FacebookSdk;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
+import com.facebook.share.widget.ShareButton;
+import com.facebook.share.widget.ShareDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -45,23 +76,38 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar pgbCalorias = null;
     private TextView txtRefeicoes = null;
     private TextView txtCalorias = null;
+    ImageView img = null;
     private BDUsuario bdUsuario;
     private BDRegistro bdRegistro;
     private BDCalorias bdCalorias;
+
+    private FacebookSdk facebook;
+    private SharedPreferences prefs;
 
     int maxRefeicoes;
     int progressRefeicoes;
     int maxCalorias;
     int progressCalorias;
 
+    private Button compartilhamento;
+
     int dia, mes, ano;
+
+    //face login
+    private LoginButton loginButton;
+    private CallbackManager callbackManager;
+    String name;
+
+    //face share
+    ShareDialog shareDialog;
+    ShareButton shareButton;
+    Bitmap image;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -76,16 +122,118 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //facebook login
+        loginButton = (LoginButton)findViewById(R.id.fbLogin);
+        loginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
+        callbackManager = CallbackManager.Factory.create();
+        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(
+                                    JSONObject object,
+                                    GraphResponse response) {
+                                // Application code
 
+                                try {
+                                    // URL image_value = new URL("http://graph.facebook.com/"+id+"/picture" );
+                                    name = object.getString("email");
+                                    Log.i("email:", object.optString("email"));
+                                    Log.i("nome", object.optString("name"));
+                                    Log.i("id", object.optString("id"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                // getting email of the use
+                                //info.setText(name);
+
+                                Log.v("LoginActivity", response.toString());
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
+
+            }
+
+            @Override
+            public void onCancel() {
+
+               //info.setText("Login attempt canceled.");
+
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+
+               // info.setText("Login attempt failed.");
+
+            }
+        });
+
+        //estacia share
+        shareDialog = new ShareDialog(this);
+        shareButton = (ShareButton)findViewById(R.id.btnCompartilha);
+
+        //pega codigo
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.caetano.leonardo.dietgame",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+
+        } catch (NoSuchAlgorithmException e) {
+
+        }
 
     }
 
+
     protected void onResume(){
         super.onResume();
+        Log.i("TesteCompartilhamento","passei pelo on resume");
+        img = (ImageView)findViewById(R.id.imgTrodeuMain);
 
         Date data = new Date(System.currentTimeMillis());
         carregaProgressBar(data);
         calculaMedalha();
+
+        // Share test
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .setCaption("#Tutorialwing")
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        shareButton.setShareContent(content);
+        /*SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .setCaption("#Tutorialwing")
+                .build();
+        content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+
+        shareDialog.show(content);
+        shareButton.setShareContent(content);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareButton.setShareContent(content);
+            }
+        });*/
+
+
     }
 
     @Override
@@ -210,19 +358,34 @@ public class MainActivity extends AppCompatActivity
         rRefeicoes = (progressRefeicoes * 100/ maxRefeicoes);
 
         totalFinal = (rCaloria + rRefeicoes) / 2;
-        ImageView img = (ImageView)findViewById(R.id.imgTrodeuMain);
 
-        if(totalFinal <= 30 )
+
+        if(totalFinal <= 30 ){
             img.setImageResource(R.drawable.bronze_grande);
-        else if(totalFinal > 30 && totalFinal <80)
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.bronze_grande);
+        }
+        else if(totalFinal > 30 && totalFinal <80) {
             img.setImageResource(R.drawable.prata_grande);
-        else
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.prata_grande);
+        }
+        else {
             img.setImageResource(R.drawable.ouro_grande);
+            image = BitmapFactory.decodeResource(getResources(), R.drawable.ouro_grande);
+        }
     }
 
-    public void ChamaAlgumaCoisa(View view){
-        Intent it = new Intent(this, BuscaAlimento.class);
-        startActivity(it);
+    //SHARE
+    private boolean reauth = false;
+    private static final String KEY = "reauth";
+
+
+    public boolean verifyPermissions(List<String> permissions, List<String> newPermissions){
+        for(String p : permissions){
+            if(newPermissions.contains(p)){
+                return(true);
+            }
+        }
+        return(false);
     }
 
     private void initDateTimeData(){

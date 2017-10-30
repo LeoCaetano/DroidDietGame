@@ -39,9 +39,9 @@
         android:minHeight="50dip"
         android:progressDrawable="@drawable/myprogressbar"
         android:progress="50"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="126dp" />
+        android:layout_below="@+id/txtQTDCalorias"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
         android:text="Calorias consumidas"
         android:id="@+id/txtQTDCalorias"
         android:textSize="15sp"
-        android:layout_above="@+id/pgbCalorias"
+        android:layout_below="@+id/pgbHorarios"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -72,22 +72,34 @@
         android:layout_below="@+id/btnPesquisaData"
         android:layout_above="@+id/txtQTDRefeicao" />
 
-    <Button
+    <!--<Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Compartilhe a sua Dieta"
         android:id="@+id/btnCompartilha"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/pgbCalorias"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="52dp" />
+        android:layout_marginTop="48dp"
+        android:onClick="Compartilhar"/>-->
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/connectWithFbButton"
+    <com.facebook.share.widget.ShareButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:text="Compartilhe a sua Dieta"
+        android:id="@+id/btnCompartilha"
+        android:layout_below="@+id/pgbCalorias"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"/>
+
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/fbLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="  connect_with_facebook"
-        />
+        android:layout_below="@+id/btnCompartilha"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp" />
 
 </RelativeLayout>
