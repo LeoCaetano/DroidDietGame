@@ -82,7 +82,7 @@
         android:layout_marginTop="48dp"
         android:onClick="Compartilhar"/>-->
 
-    <com.facebook.share.widget.ShareButton
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Compartilhe a sua Dieta"

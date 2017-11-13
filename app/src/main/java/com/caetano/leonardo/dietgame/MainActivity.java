@@ -41,6 +41,7 @@ import com.caetano.leonardo.bd.BDUsuario;
 import com.caetano.leonardo.dietgame.beans.HorarioRefeicao;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -48,6 +49,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.facebook.share.model.ShareLinkContent;
@@ -59,6 +61,7 @@ import com.facebook.share.widget.ShareDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity
     ShareDialog shareDialog;
     ShareButton shareButton;
     Bitmap image;
+    LoginManager manager;
 
 
     @Override
@@ -177,7 +181,24 @@ public class MainActivity extends AppCompatActivity
 
         //estacia share
         shareDialog = new ShareDialog(this);
-        shareButton = (ShareButton)findViewById(R.id.btnCompartilha);
+        /*shareButton = (ShareButton)findViewById(R.id.btnCompartilha);
+        image = BitmapFactory.decodeResource(getResources(), R.drawable.ouro);
+        SharePhoto photo = new SharePhoto.Builder()
+                .setBitmap(image)
+                .setCaption("#Tutorialwing")
+                .build();
+        SharePhotoContent content = new SharePhotoContent.Builder()
+                .addPhoto(photo)
+                .build();
+        shareButton.setShareContent(content);*/
+
+        Button button = (Button) findViewById(R.id.btnCompartilha);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publishImage();
+            }
+        });
 
         //pega codigo
         try {
@@ -200,40 +221,11 @@ public class MainActivity extends AppCompatActivity
 
     protected void onResume(){
         super.onResume();
-        Log.i("TesteCompartilhamento","passei pelo on resume");
         img = (ImageView)findViewById(R.id.imgTrodeuMain);
 
         Date data = new Date(System.currentTimeMillis());
         carregaProgressBar(data);
         calculaMedalha();
-
-        // Share test
-        SharePhoto photo = new SharePhoto.Builder()
-                .setBitmap(image)
-                .setCaption("#Tutorialwing")
-                .build();
-        SharePhotoContent content = new SharePhotoContent.Builder()
-                .addPhoto(photo)
-                .build();
-        shareButton.setShareContent(content);
-        /*SharePhoto photo = new SharePhoto.Builder()
-                .setBitmap(image)
-                .setCaption("#Tutorialwing")
-                .build();
-        content = new SharePhotoContent.Builder()
-                .addPhoto(photo)
-                .build();
-
-        shareDialog.show(content);
-        shareButton.setShareContent(content);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shareButton.setShareContent(content);
-            }
-        });*/
-
-
     }
 
     @Override
@@ -386,6 +378,42 @@ public class MainActivity extends AppCompatActivity
             }
         }
         return(false);
+    }
+
+    public void CompartilhaDieta(View view){
+
+
+        callbackManager = CallbackManager.Factory.create();
+
+        List<String> permissionNeeds = Arrays.asList("publish_actions");
+
+        //this loginManager helps you eliminate adding a LoginButton to your UI
+        manager = LoginManager.getInstance();
+
+        manager.logInWithPublishPermissions(this, permissionNeeds);
+
+        publishImage();
+    }
+
+    private void publishImage() {
+        if (ShareDialog.canShow(SharePhotoContent.class)) {
+            try {
+
+                SharePhoto photo = new SharePhoto.Builder()
+                        .setBitmap(image)
+                        .build();
+
+                if (ShareDialog.canShow(SharePhotoContent.class)) {
+                    SharePhotoContent sharePhotoContent = new SharePhotoContent.Builder()
+                            .addPhoto(photo)
+                            .build();
+
+                    shareDialog.show(sharePhotoContent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initDateTimeData(){
