@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/txtRefeicao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30px"
+        android:text="Valor atual de calorias: "
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="     Nova quantidade de Calorias"
+            android:inputType="numberDecimal"
+            android:id="@+id/txtNovaQuantidade"
+            android:layout_gravity="center_horizontal"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Altera quantidade caloria"
+        android:id="@+id/btnTrocaQ"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

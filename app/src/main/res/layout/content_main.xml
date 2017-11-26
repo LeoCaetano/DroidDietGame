@@ -41,7 +41,8 @@
         android:progress="50"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/txtQTDCalorias"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="ChamaTelaCalorias"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -72,15 +73,7 @@
         android:layout_below="@+id/btnPesquisaData"
         android:layout_above="@+id/txtQTDRefeicao" />
 
-    <!--<Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Compartilhe a sua Dieta"
-        android:id="@+id/btnCompartilha"
-        android:layout_below="@+id/pgbCalorias"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp"
-        android:onClick="Compartilhar"/>-->
+
 
     <Button
         android:layout_width="wrap_content"
@@ -88,11 +81,12 @@
         android:text="Compartilhe a sua Dieta"
         android:id="@+id/btnCompartilha"
         android:layout_below="@+id/pgbCalorias"
+        android:onClick="CompartilhaDieta"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="48dp"/>
 
 
-    <com.facebook.login.widget.LoginButton
+    <!--<com.facebook.login.widget.LoginButton
         android:id="@+id/fbLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,6 +94,6 @@
         android:text="  connect_with_facebook"
         android:layout_below="@+id/btnCompartilha"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="48dp" />
+        android:layout_marginTop="48dp" />-->
 
 </RelativeLayout>

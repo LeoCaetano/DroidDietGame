@@ -42,22 +42,23 @@ public class BDUsuario {
         int quantidadeR;
 
         if (Insere)
-            quantidadeR = buscaQtdCalorias()+1;
+            quantidadeR = buscaQtdRefeicoes()+1;
         else
-            quantidadeR = buscaQtdCalorias()-1;
+            quantidadeR = buscaQtdRefeicoes()-1;
 
         ContentValues valores = new ContentValues();
         valores.put("qtd_refeicoes_dia",  quantidadeR);
         bd.update("usuario", valores, null, null);
     }
 
-    public void atualizarQtdCalorias(){
-
-        int quantidadeC = buscaQtdCalorias();
+    public void atualizarQtdCalorias(int pNovoValor){
 
         ContentValues valores = new ContentValues();
-        valores.put("qtd_calorias_dia",  quantidadeC);
+        valores.put("qtd_calorias_dia",  pNovoValor);
         bd.update("usuario", valores, null, null);
+
+        atualizaLog(pNovoValor, "C");
+
     }
 
     public int buscaQtdRefeicoes() {
@@ -70,28 +71,43 @@ public class BDUsuario {
         return count;
     }
 
-    public int buscaQtdCalorias(){
-        int qtdCalorias = 0;
-        String[] colunas = new String[]{"id", "qtd_calorias_dia"};
-
-        Cursor cursor = bd.query("usuario", colunas, null, null, null, null, "id ASC");
-        if(cursor.getCount() > 0){
-            cursor.moveToFirst();
-            do{
-                qtdCalorias = cursor.getInt(1);
-                Log.i("sql",String.valueOf(cursor.getLong(1)));
-            }while(cursor.moveToNext());
-        }
-        return(qtdCalorias);
-    }
-
-    public int consultaLogRefeicoes(Date pData){
+    public int buscaQtdCaloriasLog(Date pData){
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         sdf.setLenient(false);
         String dataString = sdf.format(pData);
 
-        Cursor mCount= bd.rawQuery( "select MAX(valor_novo) from log_registro where log_registro.item_alterado = 'R' DATE(data_alteracao) < DATE('" + dataString + "')", null);
+        Cursor mCount= bd.rawQuery("select max(id), valor_novo from Log_registro WHERE DATE(data_alteracao) <= DATE('" + dataString + "') and item_alterado = 'C'", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(1);
+        mCount.close();
+
+        if(count==0)
+            count = CaloriasUsuario();
+
+        return count;
+
+    }
+
+    public int buscaQtdRefeicoesLog(Date pData){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        sdf.setLenient(false);
+        String dataString = sdf.format(pData);
+
+        Cursor mCount= bd.rawQuery( "select max(id), valor_novo from log_registro where log_registro.item_alterado = 'R' AND DATE(data_alteracao) <= DATE('" + dataString + "')", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(1);
+        mCount.close();
+
+        if(count==0)
+            count = RefeicoesUsuario();
+
+        return count;
+
+    }
+
+    public int CaloriasUsuario(){
+        Cursor mCount= bd.rawQuery("select qtd_calorias_dia from usuario", null);
         mCount.moveToFirst();
         int count= mCount.getInt(0);
         mCount.close();
@@ -100,19 +116,38 @@ public class BDUsuario {
 
     }
 
-    private void atualizaLogRefeicoes(){
+    public int RefeicoesUsuario(){
+        Cursor mCount= bd.rawQuery("select qtd_refeicoes_dia from usuario", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+
+        return count;
+
+    }
+
+    private void atualizaLog(int pValorNovo, String pItemAlteracao){
 
         Date data = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String horaMin = sdf.format(data);
 
-        int valorAntigo = buscaQtdRefeicoes();
-
         ContentValues valores = new ContentValues();
+        int valorAntigo;
+
+        if(pItemAlteracao == "R"){
+            valorAntigo = buscaQtdRefeicoes();
+
+        }else{
+            valorAntigo = CaloriasUsuario();
+
+        }
+
+
         valores.put("valor_anterior", valorAntigo);
-        valores.put("valor_novo", valorAntigo + 1);
+        valores.put("valor_novo", pValorNovo);
         valores.put("data_alteracao", horaMin);
-        valores.put("item_alterado", "R");
+        valores.put("item_alterado", pItemAlteracao);
         bd.insert("usuario", null, valores);
     }
 

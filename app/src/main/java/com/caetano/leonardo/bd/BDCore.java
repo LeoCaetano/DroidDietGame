@@ -646,9 +646,6 @@ public class BDCore extends SQLiteOpenHelper {
 				"(596,'Pupunha, cozida',219),"+
 				"(597,'Noz, crua',620)");
 
-
-		bd.execSQL("insert into usuario(qtd_refeicoes_dia, qtd_calorias_dia) values(0, 3000)");
-
 		funcaoTeste(bd);
 
 	}
@@ -656,6 +653,9 @@ public class BDCore extends SQLiteOpenHelper {
 	private void funcaoTeste(SQLiteDatabase bd){
 
 		Calendar c = Calendar.getInstance();
+
+		bd.execSQL("Insert into usuario (qtd_refeicoes_dia, qtd_calorias_dia) Values "+
+				" ('4', '3000')");
 
 		bd.execSQL("Insert into horario_refeicao (horario_consumo, ativo, refeicao_id) Values "+
 					" ('09:00', 'S', '1'),"+

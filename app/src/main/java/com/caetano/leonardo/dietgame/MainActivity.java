@@ -38,6 +38,7 @@ import android.widget.Toast;
 import com.caetano.leonardo.bd.BDCalorias;
 import com.caetano.leonardo.bd.BDRegistro;
 import com.caetano.leonardo.bd.BDUsuario;
+import com.caetano.leonardo.dietgame.beans.Alimento;
 import com.caetano.leonardo.dietgame.beans.HorarioRefeicao;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
 
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //facebook login
-        loginButton = (LoginButton)findViewById(R.id.fbLogin);
+       /* loginButton = (LoginButton)findViewById(R.id.fbLogin);
         loginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
         callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                // info.setText("Login attempt failed.");
 
             }
-        });
+        });*/
 
         //estacia share
         shareDialog = new ShareDialog(this);
@@ -306,14 +307,14 @@ public class MainActivity extends AppCompatActivity
         txtCalorias = (TextView)findViewById(R.id.txtQTDCalorias);
 
         //preenche pgb refeições
-        maxRefeicoes = bdUsuario.buscaQtdRefeicoes();
+        maxRefeicoes = bdUsuario.buscaQtdRefeicoesLog(pData);
         progressRefeicoes = bdRegistro.registrosFeitos(pData);
         pgbRefeicoes.setMax(maxRefeicoes);
         pgbRefeicoes.setProgress(progressRefeicoes);
         txtRefeicoes.setText("Refeições feitas hoje "+progressRefeicoes+" de "+maxRefeicoes);
 
-        //preenche pgb refeições
-        maxCalorias = bdUsuario.buscaQtdCalorias();
+        //preenche pgb calorias
+        maxCalorias = bdUsuario.buscaQtdCaloriasLog(pData);
         progressCalorias = bdCalorias.buscaPorData(pData);
         pgbCalorias.setMax(maxCalorias);
         pgbCalorias.setProgress(progressCalorias);
@@ -345,6 +346,11 @@ public class MainActivity extends AppCompatActivity
         double rCaloria;
         double rRefeicoes;
         double totalFinal;
+
+        String teste = maxCalorias+"-"+progressCalorias+" = "+maxRefeicoes+"-"+progressRefeicoes;
+
+        Log.i("teste", teste);
+
 
         rCaloria = (progressCalorias * 100/ maxCalorias);
         rRefeicoes = (progressRefeicoes * 100/ maxRefeicoes);
@@ -414,6 +420,33 @@ public class MainActivity extends AppCompatActivity
                 e.printStackTrace();
             }
         }
+
+    }
+
+
+    public void  ChamaTelaCalorias(View view){
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_troca_calorias, null);
+
+        final EditText mQuantidadeP = (EditText) mView.findViewById(R.id.txtNovaQuantidade);
+        Button mAdiciona = (Button) mView.findViewById(R.id.btnTrocaQ);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+
+        mAdiciona.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                int dQuantidade = Integer.parseInt(mQuantidadeP.getText().toString());
+
+                bdUsuario.atualizarQtdCalorias(dQuantidade);
+                dialog.dismiss();
+                finish();
+
+            }
+        });
+
     }
 
     private void initDateTimeData(){

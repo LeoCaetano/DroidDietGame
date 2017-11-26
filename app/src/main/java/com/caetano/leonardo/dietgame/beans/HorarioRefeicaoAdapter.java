@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,8 +74,8 @@ public class HorarioRefeicaoAdapter extends BaseAdapter {
         TextView horario = (TextView) layout.findViewById(R.id.txtHorario);
         horario.setText( df.format(horarioRefeicao.getHorarioConsumo()));
 
-        Button btnEditar = (Button) layout.findViewById(R.id.btnEditar);
-        btnEditar.setOnClickListener(new Button.OnClickListener() {
+        ImageView imgEditar = (ImageView) layout.findViewById(R.id.img_editar);
+        imgEditar.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -88,8 +89,8 @@ public class HorarioRefeicaoAdapter extends BaseAdapter {
             }
         });
 
-        Button btnExcluir = (Button) layout.findViewById(R.id.btnExcluirH);
-        btnExcluir.setOnClickListener(new Button.OnClickListener(){
+        ImageView imgExcluir = (ImageView) layout.findViewById(R.id.img_excluir);
+        imgExcluir .setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View arg0) {
 
