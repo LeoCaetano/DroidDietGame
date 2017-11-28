@@ -657,6 +657,11 @@ public class BDCore extends SQLiteOpenHelper {
 		bd.execSQL("Insert into usuario (qtd_refeicoes_dia, qtd_calorias_dia) Values "+
 				" ('4', '3000')");
 
+		bd.execSQL("Insert into Log_registro (valor_anterior, valor_novo, data_alteracao, item_alterado) Values "+
+				" ('3', '4','2017-09-1 09:00', 'R'),"+
+				" ('2000', '3000','2017-09-1 09:00', 'C');");
+
+
 		bd.execSQL("Insert into horario_refeicao (horario_consumo, ativo, refeicao_id) Values "+
 					" ('09:00', 'S', '1'),"+
 					" ('12:00', 'S', '2'),"+
@@ -669,6 +674,8 @@ public class BDCore extends SQLiteOpenHelper {
 		int diaAtual = c.get(Calendar.DAY_OF_MONTH);
 
 		Log.i("dias",String.valueOf(diaAnterior) +" - "+ String.valueOf(diaAtual));
+
+
 
 		bd.execSQL("Insert into registro (data_hora_registro, horario_refeicao_id, total_calorias) Values "+
 				"('2017-09-1 09:00', 1, 500),"+

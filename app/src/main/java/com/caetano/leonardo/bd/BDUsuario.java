@@ -42,13 +42,15 @@ public class BDUsuario {
         int quantidadeR;
 
         if (Insere)
-            quantidadeR = buscaQtdRefeicoes()+1;
+            quantidadeR = buscaQtdRefeicoes();
         else
             quantidadeR = buscaQtdRefeicoes()-1;
 
         ContentValues valores = new ContentValues();
         valores.put("qtd_refeicoes_dia",  quantidadeR);
         bd.update("usuario", valores, null, null);
+
+        atualizaLog(quantidadeR, "R");
     }
 
     public void atualizarQtdCalorias(int pNovoValor){

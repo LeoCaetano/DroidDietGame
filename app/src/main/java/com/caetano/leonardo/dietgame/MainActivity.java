@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //facebook login
-       /* loginButton = (LoginButton)findViewById(R.id.fbLogin);
+        loginButton = (LoginButton)findViewById(R.id.fbLogin);
         loginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
         callbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                // info.setText("Login attempt failed.");
 
             }
-        });*/
+        });
 
         //estacia share
         shareDialog = new ShareDialog(this);
@@ -224,9 +224,24 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         img = (ImageView)findViewById(R.id.imgTrodeuMain);
 
+        Button btnCom = (Button) findViewById(R.id.btnCompartilha);
+        Button btnLogin = (Button) findViewById(R.id.fbLogin);
+
+
+        if(AccessToken.getCurrentAccessToken() != null){
+            btnCom.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.GONE);
+        }else{
+            btnCom.setVisibility(View.GONE);
+            btnLogin.setVisibility(View.VISIBLE);
+        }
+
+
         Date data = new Date(System.currentTimeMillis());
         carregaProgressBar(data);
         calculaMedalha();
+
+
     }
 
     @Override

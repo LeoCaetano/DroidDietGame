@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.caetano.leonardo.bd.BDHorarioRefeicao;
 import com.caetano.leonardo.bd.BDRefeicao;
+import com.caetano.leonardo.bd.BDUsuario;
 import com.caetano.leonardo.dietgame.beans.HorarioRefeicao;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
 
@@ -164,6 +165,7 @@ public class NovoHorarioActivity extends AppCompatActivity
     public void criarHorario(View view){
 
         BDHorarioRefeicao bd = new BDHorarioRefeicao(this);
+        BDUsuario bdUsu = new BDUsuario(this);
         HorarioRefeicao horaRefeicao;
 
         if(horaRef.getId() <= 0 || horaRef == null) {
@@ -185,7 +187,8 @@ public class NovoHorarioActivity extends AppCompatActivity
         horaRefeicao.setRefeicao(ref);
 
         if(horaRefeicao.getId() <= 0) {
-           Long idCad = bd.inserir(horaRefeicao);
+            Long idCad = bd.inserir(horaRefeicao);
+            bdUsu.atualizarQtdRefeicoes(true);
             horaRefeicao.setId(Integer.valueOf(idCad.toString()));
         }else {
             bd.atualizar(horaRefeicao);

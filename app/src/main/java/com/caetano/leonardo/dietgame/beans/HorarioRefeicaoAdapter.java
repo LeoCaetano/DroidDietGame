@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.caetano.leonardo.bd.BDHorarioRefeicao;
 import com.caetano.leonardo.bd.BDRefeicao;
+import com.caetano.leonardo.bd.BDUsuario;
 import com.caetano.leonardo.dietgame.NovoHorarioActivity;
 import com.caetano.leonardo.dietgame.R;
 
@@ -98,6 +99,10 @@ public class HorarioRefeicaoAdapter extends BaseAdapter {
                 horaRefeicao = lista.get(position);
                 BDHorarioRefeicao bd = new BDHorarioRefeicao(context);
                 bd.deletar(horaRefeicao);
+
+                BDUsuario bdUsu = new BDUsuario(context);
+                bdUsu.atualizarQtdRefeicoes(false);
+
 
             }
         }
