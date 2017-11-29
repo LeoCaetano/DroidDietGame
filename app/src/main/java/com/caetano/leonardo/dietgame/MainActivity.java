@@ -102,6 +102,10 @@ public class MainActivity extends AppCompatActivity
     private CallbackManager callbackManager;
     String name;
 
+    Button btnCom;
+    Button btnLogin;
+
+
     //face share
     ShareDialog shareDialog;
     ShareButton shareButton;
@@ -127,58 +131,65 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //facebook login
-        loginButton = (LoginButton)findViewById(R.id.fbLogin);
-        loginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
-        callbackManager = CallbackManager.Factory.create();
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-                            @Override
-                            public void onCompleted(
-                                    JSONObject object,
-                                    GraphResponse response) {
-                                // Application code
+        btnCom = (Button) findViewById(R.id.btnCompartilha);
+        btnLogin = (Button) findViewById(R.id.login_button);
 
+        //facebook login
+        callbackManager = CallbackManager.Factory.create();
+
+        loginButton = (LoginButton) findViewById(R.id.login_button);
+
+        List < String > permissionNeeds = Arrays.asList("user_photos", "email",
+                "user_birthday", "public_profile", "AccessToken");
+        loginButton.registerCallback(callbackManager,
+                new FacebookCallback < LoginResult > () {@Override
+                public void onSuccess(LoginResult loginResult) {
+
+                    System.out.println("onSuccess");
+
+                    String accessToken = loginResult.getAccessToken()
+                            .getToken();
+                    Log.i("accessToken", accessToken);
+
+                    GraphRequest request = GraphRequest.newMeRequest(
+                            loginResult.getAccessToken(),
+                            new GraphRequest.GraphJSONObjectCallback() {@Override
+                            public void onCompleted(JSONObject object,
+                                                    GraphResponse response) {
+
+                                Log.i("LoginActivity",
+                                        response.toString());
                                 try {
-                                    // URL image_value = new URL("http://graph.facebook.com/"+id+"/picture" );
-                                    name = object.getString("email");
-                                    Log.i("email:", object.optString("email"));
-                                    Log.i("nome", object.optString("name"));
-                                    Log.i("id", object.optString("id"));
+                                    Log.i("teste", object.getString("id"));
+
+                                    Log.i("teste", object.getString("name"));
+                                    Log.i("teste", object.getString("email"));
+                                    Log.i("teste", object.getString("gender"));
+                                    Log.i("teste", object.getString("birthday"));
+                                    verificaLogin();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                // getting email of the use
-                                //info.setText(name);
-
-                                Log.v("LoginActivity", response.toString());
                             }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
+                            });
+                    Bundle parameters = new Bundle();
+                    parameters.putString("fields",
+                            "id,name,email,gender, birthday");
+                    request.setParameters(parameters);
+                    request.executeAsync();
+                }
 
-            }
+                    @Override
+                    public void onCancel() {
+                        System.out.println("onCancel");
+                    }
 
-            @Override
-            public void onCancel() {
-
-               //info.setText("Login attempt canceled.");
-
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-
-               // info.setText("Login attempt failed.");
-
-            }
-        });
+                    @Override
+                    public void onError(FacebookException exception) {
+                        System.out.println("onError");
+                        Log.v("LoginActivity", exception.getCause().toString());
+                    }
+                });
 
         //estacia share
         shareDialog = new ShareDialog(this);
@@ -224,24 +235,10 @@ public class MainActivity extends AppCompatActivity
         super.onResume();
         img = (ImageView)findViewById(R.id.imgTrodeuMain);
 
-        Button btnCom = (Button) findViewById(R.id.btnCompartilha);
-        Button btnLogin = (Button) findViewById(R.id.fbLogin);
-
-
-        if(AccessToken.getCurrentAccessToken() != null){
-            btnCom.setVisibility(View.VISIBLE);
-            btnLogin.setVisibility(View.GONE);
-        }else{
-            btnCom.setVisibility(View.GONE);
-            btnLogin.setVisibility(View.VISIBLE);
-        }
-
-
         Date data = new Date(System.currentTimeMillis());
+        verificaLogin();
         carregaProgressBar(data);
         calculaMedalha();
-
-
     }
 
     @Override
@@ -303,6 +300,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    protected void onActivityResult(int requestCode, int responseCode,
+                                    Intent data) {
+        super.onActivityResult(requestCode, responseCode, data);
+        callbackManager.onActivityResult(requestCode, responseCode, data);
+    }
 
     public void carregaProgressBar(Date pData){
 
@@ -391,6 +393,20 @@ public class MainActivity extends AppCompatActivity
     private boolean reauth = false;
     private static final String KEY = "reauth";
 
+    public void verificaLogin(){
+
+        Profile profile = Profile.getCurrentProfile().getCurrentProfile();
+        if(profile != null){
+            btnCom.setVisibility(View.VISIBLE);
+            btnLogin.setVisibility(View.GONE);
+            Log.i("login ", "coloquei invisivel login");
+        }else{
+            btnCom.setVisibility(View.GONE);
+            btnLogin.setVisibility(View.VISIBLE);
+            Log.i("login ", "coloquei visivel login");
+        }
+
+    }
 
     public boolean verifyPermissions(List<String> permissions, List<String> newPermissions){
         for(String p : permissions){
