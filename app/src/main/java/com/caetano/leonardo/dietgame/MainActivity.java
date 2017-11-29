@@ -17,6 +17,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.util.EventLogTags;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -53,6 +54,7 @@ import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.share.model.ShareHashtag;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
@@ -96,6 +98,8 @@ public class MainActivity extends AppCompatActivity
     private Button compartilhamento;
 
     int dia, mes, ano;
+
+    int posicao;
 
     //face login
     private LoginButton loginButton;
@@ -300,8 +304,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    protected void onActivityResult(int requestCode, int responseCode,
-                                    Intent data) {
+    protected void onActivityResult(int requestCode, int responseCode, Intent data) {
         super.onActivityResult(requestCode, responseCode, data);
         callbackManager.onActivityResult(requestCode, responseCode, data);
     }
@@ -364,10 +367,6 @@ public class MainActivity extends AppCompatActivity
         double rRefeicoes;
         double totalFinal;
 
-        String teste = maxCalorias+"-"+progressCalorias+" = "+maxRefeicoes+"-"+progressRefeicoes;
-
-        Log.i("teste", teste);
-
 
         rCaloria = (progressCalorias * 100/ maxCalorias);
         rRefeicoes = (progressRefeicoes * 100/ maxRefeicoes);
@@ -378,14 +377,17 @@ public class MainActivity extends AppCompatActivity
         if(totalFinal <= 30 ){
             img.setImageResource(R.drawable.bronze_grande);
             image = BitmapFactory.decodeResource(getResources(), R.drawable.bronze_grande);
+            posicao = 3;
         }
         else if(totalFinal > 30 && totalFinal <80) {
             img.setImageResource(R.drawable.prata_grande);
             image = BitmapFactory.decodeResource(getResources(), R.drawable.prata_grande);
+            posicao = 2;
         }
         else {
             img.setImageResource(R.drawable.ouro_grande);
             image = BitmapFactory.decodeResource(getResources(), R.drawable.ouro_grande);
+            posicao = 1;
         }
     }
 
@@ -433,25 +435,38 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void publishImage() {
-        if (ShareDialog.canShow(SharePhotoContent.class)) {
-            try {
 
-                SharePhoto photo = new SharePhoto.Builder()
-                        .setBitmap(image)
-                        .build();
+        String Mensagem, Descricao, imgLink = "";
 
-                if (ShareDialog.canShow(SharePhotoContent.class)) {
-                    SharePhotoContent sharePhotoContent = new SharePhotoContent.Builder()
-                            .addPhoto(photo)
-                            .build();
-
-                    shareDialog.show(sharePhotoContent);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        if(posicao == 3) {
+            Mensagem = "Continue com a sua Dieta";
+            Descricao = "Foco é chave para melhorar seu Desempenho";
+            imgLink = "https://drive.google.com/open?id=1lr3pt5LqdPVaD-m-gpNqjUsSEGSAjQWJ";
+        }else if(posicao == 2){
+            Mensagem = "Falta pouco";
+            Descricao = "Continue assim e você consiguirá a boa saúde que deseja";
+            imgLink = "https://drive.google.com/open?id=1t3DpnMg8BPwRpfjPZdjeHC2ADCsj5Pn9";
+        }else{
+            Mensagem = "Muito Bem";
+            Descricao = "Paarabéns!!!! Continue mantendo sua dieta assim os resultados serão ótimos ";
+            imgLink = "https://drive.google.com/open?id=1KWzAy-H6a4fmAs9ArC44C9-813xOWcVH";
         }
 
+        if (ShareDialog.canShow(ShareLinkContent.class)) {
+
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(Mensagem)
+                    .setContentDescription(Descricao)
+                    .setContentUrl(Uri.parse("http://google.com"))
+                    .setImageUrl(Uri.parse(imgLink))
+                    .setShareHashtag(new ShareHashtag.Builder()
+                            .setHashtag("#DietGame")
+                            .build())
+
+                    .build();
+
+            shareDialog.show(linkContent);
+        }
     }
 
 
