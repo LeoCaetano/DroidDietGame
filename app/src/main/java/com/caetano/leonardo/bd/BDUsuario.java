@@ -37,6 +37,21 @@ public class BDUsuario {
         bd.insert("usuario", null, valores);
     }
 
+    public int buscaIdUsuario(){
+        Cursor mCount= bd.rawQuery("select Ids from usuario", null);
+        mCount.moveToFirst();
+        int count= mCount.getInt(0);
+        mCount.close();
+
+        return count;
+    }
+
+    public void insertIdUsuario(int pID){
+        ContentValues valores = new ContentValues();
+        valores.put("id", pID);
+        bd.insert("usuario", null, valores);
+    }
+
     public void atualizarQtdRefeicoes(boolean Insere){
 
         int quantidadeR;

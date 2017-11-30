@@ -1,5 +1,6 @@
 package com.caetano.leonardo.dietgame;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
@@ -43,6 +44,7 @@ import com.caetano.leonardo.dietgame.beans.Alimento;
 import com.caetano.leonardo.dietgame.beans.HorarioRefeicao;
 import com.caetano.leonardo.dietgame.beans.Refeicao;
 
+import com.caetano.leonardo.service.HttpConnection;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -61,6 +63,7 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareButton;
 import com.facebook.share.widget.ShareDialog;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,11 +71,15 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import DTO.registrosDTO;
 
 
 public class MainActivity extends AppCompatActivity
@@ -170,6 +177,7 @@ public class MainActivity extends AppCompatActivity
                                     Log.i("teste", object.getString("email"));
                                     Log.i("teste", object.getString("gender"));
                                     Log.i("teste", object.getString("birthday"));
+
                                     verificaLogin();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -240,9 +248,12 @@ public class MainActivity extends AppCompatActivity
         img = (ImageView)findViewById(R.id.imgTrodeuMain);
 
         Date data = new Date(System.currentTimeMillis());
-        verificaLogin();
+
         carregaProgressBar(data);
         calculaMedalha();
+
+        verificaLogin();
+
     }
 
     @Override
@@ -402,6 +413,11 @@ public class MainActivity extends AppCompatActivity
             btnCom.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
             Log.i("login ", "coloquei invisivel login");
+            bdUsuario = new BDUsuario(this);
+
+            bdUsuario.insertIdUsuario(Integer.parseInt(profile.getId()));
+
+
         }else{
             btnCom.setVisibility(View.GONE);
             btnLogin.setVisibility(View.VISIBLE);
@@ -522,4 +538,112 @@ public class MainActivity extends AppCompatActivity
             carregaProgressBar(date);
         }
     };
+
+    //metodos REST
+    public void sendJson(View view) throws ParseException {
+
+        int pAno = 2017;
+        int pMes = 11;
+        int pDia = 01;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.MONTH, pMes);
+        calendar.set(Calendar.YEAR, pAno);
+        calendar.set(Calendar.DAY_OF_MONTH,pDia);
+        Date date = calendar.getTime();
+
+        bdUsuario = new BDUsuario(this);
+        bdRegistro = new BDRegistro(this);
+
+        int IDU = bdUsuario.buscaIdUsuario();
+
+        List<registrosDTO> lista = bdRegistro.buscaAcumulado(date, IDU);
+
+        /* json = generateJSON(lista);
+
+        callServer("send-json", json);*/
+    }
+
+
+    /*public void getJson(View view){
+        callServer("get-json", "");
+    }*/
+
+
+    /*private String generateJSON(List<registrosDTO> lista){
+
+        JSONArray ja = new JSONArray();
+
+        try{
+
+            for (registrosDTO dto : lista) {
+                JSONObject jo = new JSONObject();
+                jo.put("Usuario_id", dto.getIdUsuario());
+                jo.put("horario_consumo", dto.getHorarioRefeicao());
+                jo.put("data_hora_registro", dto.getDataHoraRegistro());
+                jo.put("total_calorias", dto.getTotalCalorias());
+                ja.put(jo);
+            }
+
+        }
+        catch(JSONException e){ e.printStackTrace(); }
+
+        return(ja.toString());
+    }*/
+
+
+   /* private Carro degenerateJSON(String data){
+        Carro carro = new Carro();
+
+        try{
+            JSONObject jo = new JSONObject(data);
+            JSONArray ja;
+
+            carro.setMarca(jo.getString("marca"));
+            carro.setModelo(jo.getString("modelo"));
+            carro.setPotencias(new ArrayList<Potencia>());
+
+            jo.put("marca", carro.getMarca());
+            jo.put("modelo", carro.getModelo());
+
+            ja = jo.getJSONArray("potencias");
+            for(int i = 0, tam = ja.length(); i < tam; i++){
+
+                Potencia p = new Potencia();
+                p.setMotor(ja.getJSONObject(i).getDouble("motor"));
+                p.setCavalos(ja.getJSONObject(i).getInt("cavalos"));
+
+                carro.getPotencias().add(p);
+            }
+
+            // APRESENTA��O
+            Log.i("Script", "Marca: "+carro.getMarca());
+            Log.i("Script", "Modelo: "+carro.getModelo());
+            for(int i = 0, tam = carro.getPotencias().size(); i < tam; i++){
+                Log.i("Script", "Motor: "+carro.getPotencias().get(i).getMotor());
+                Log.i("Script", "Cavalos: "+carro.getPotencias().get(i).getCavalos());
+            }
+
+        }
+        catch(JSONException e){ e.printStackTrace(); }
+
+        return(carro);
+    }*/
+
+    @SuppressLint("NewApi")
+    private void callServer(final String method, final String data){
+        new Thread(){
+            public void run(){
+                String answer = HttpConnection.getSetDataWeb("http://www.villopim.com.br/android/json/process.php", method, data);
+
+                Log.i("Script", "ANSWER: "+answer);
+
+                if(data.isEmpty()){
+                    //degenerateJSON(answer);
+                }
+            }
+        }.start();
+    }
+
 }

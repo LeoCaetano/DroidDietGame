@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import DTO.registrosDTO;
+
 /**
  */
 public class BDRegistro {
@@ -168,6 +170,47 @@ public class BDRegistro {
         mCount.close();
 
         return count;
+    }
+
+    public List<registrosDTO> buscaAcumulado(Date pData, int pIdServidor) throws ParseException {
+        List<registrosDTO> lista = new ArrayList<registrosDTO>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        sdf.setLenient(false);
+        String dataString = sdf.format(pData);
+
+        //2
+        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+        sdf2.setLenient(false);
+
+        Cursor cursor= bd.rawQuery("select reg.id, reg.data_hora_registro, hor.horario_consumo, reg.totalcalorias from registro reg, horario_refeicao hor where reg.horario_refeicao_id = hor.id and DATE('" + dataString + "')", null);
+
+
+        if(cursor.getCount() > 0){
+            cursor.moveToFirst();
+
+            do{
+                registrosDTO registro = new registrosDTO();
+
+                //ID
+                registro.setId(cursor.getInt(0));
+                //data hora registro
+                Date c =  sdf.parse(cursor.getString(1));
+                registro.setDataHoraRegistro(c);
+
+                //horario registro
+                Date d =  sdf2.parse(cursor.getString(2));
+                registro.setHorarioRefeicao(d);
+
+                //calorias
+                registro.setTotalCalorias(cursor.getInt(3));
+
+
+                lista.add(registro);
+
+            }while(cursor.moveToNext());
+        }
+
+        return lista;
     }
 
 }

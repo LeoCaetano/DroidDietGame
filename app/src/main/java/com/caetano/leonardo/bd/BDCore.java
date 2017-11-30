@@ -658,7 +658,7 @@ public class BDCore extends SQLiteOpenHelper {
 				" ('4', '3000')");
 
 		bd.execSQL("Insert into Log_registro (valor_anterior, valor_novo, data_alteracao, item_alterado) Values "+
-				" ('3', '4','2017-09-1 09:00', 'R'),"+
+				" ('4', '5','2017-09-1 09:00', 'R'),"+
 				" ('2000', '3000','2017-09-1 09:00', 'C');");
 
 
