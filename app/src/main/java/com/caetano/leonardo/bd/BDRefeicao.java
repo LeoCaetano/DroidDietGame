@@ -72,13 +72,10 @@ public class BDRefeicao {
 
         if(cursor.getCount() > 0){
             cursor.moveToFirst();
-
-
                 ref.setId(cursor.getInt(0));
                 ref.setTitulo(cursor.getString(1));
                 ref.setDescricao(cursor.getString(2));
                 list.add(ref);
-
         }
 
         return ref;

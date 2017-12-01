@@ -6,14 +6,14 @@ import java.util.Date;
 public class registrosDTO {
 
     private int Id;
-    private Date DataHoraRegistro;
-    private Date HorarioRefeicao;
+    private String DataHoraRegistro;
+    private String HorarioRefeicao;
     private int TotalCalorias;
     private int IdUsuario;
 
     public registrosDTO(){};
 
-    public registrosDTO(int id, Date dataHoraRegistro, Date horarioRefeicao, int totalCalorias, int idUsuario) {
+    public registrosDTO(int id, String dataHoraRegistro, String horarioRefeicao, int totalCalorias, int idUsuario) {
         this.Id = id;
         this.DataHoraRegistro = dataHoraRegistro;
         this.HorarioRefeicao = horarioRefeicao;
@@ -29,19 +29,19 @@ public class registrosDTO {
         Id = id;
     }
 
-    public Date getDataHoraRegistro() {
+    public String getDataHoraRegistro() {
         return DataHoraRegistro;
     }
 
-    public void setDataHoraRegistro(Date dataHoraRegistro) {
+    public void setDataHoraRegistro(String dataHoraRegistro) {
         DataHoraRegistro = dataHoraRegistro;
     }
 
-    public Date getHorarioRefeicao() {
+    public String getHorarioRefeicao() {
         return HorarioRefeicao;
     }
 
-    public void setHorarioRefeicao(Date horarioRefeicao) {
+    public void setHorarioRefeicao(String horarioRefeicao) {
         HorarioRefeicao = horarioRefeicao;
     }
 

@@ -168,7 +168,7 @@ public class BDRegistro {
         mCount.moveToFirst();
         int count= mCount.getInt(0);
         mCount.close();
-
+        Log.i("teste r",dataString);
         return count;
     }
 
@@ -182,7 +182,7 @@ public class BDRegistro {
         SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
         sdf2.setLenient(false);
 
-        Cursor cursor= bd.rawQuery("select reg.id, reg.data_hora_registro, hor.horario_consumo, reg.totalcalorias from registro reg, horario_refeicao hor where reg.horario_refeicao_id = hor.id and DATE('" + dataString + "')", null);
+        Cursor cursor= bd.rawQuery("select reg.id, reg.data_hora_registro, hor.horario_consumo, reg.total_calorias from registro reg, horario_refeicao hor where reg.horario_refeicao_id = hor.id and DATE('" + dataString + "')", null);
 
 
         if(cursor.getCount() > 0){
@@ -195,11 +195,11 @@ public class BDRegistro {
                 registro.setId(cursor.getInt(0));
                 //data hora registro
                 Date c =  sdf.parse(cursor.getString(1));
-                registro.setDataHoraRegistro(c);
+                registro.setDataHoraRegistro(cursor.getString(1));
 
                 //horario registro
                 Date d =  sdf2.parse(cursor.getString(2));
-                registro.setHorarioRefeicao(d);
+                registro.setHorarioRefeicao(cursor.getString(2));
 
                 //calorias
                 registro.setTotalCalorias(cursor.getInt(3));

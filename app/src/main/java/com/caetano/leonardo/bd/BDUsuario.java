@@ -74,7 +74,7 @@ public class BDUsuario {
         valores.put("qtd_calorias_dia",  pNovoValor);
         bd.update("usuario", valores, null, null);
 
-        atualizaLog(pNovoValor, "C");
+        atualizaLog(pNovoValor, "'C'");
 
     }
 
@@ -94,7 +94,7 @@ public class BDUsuario {
         sdf.setLenient(false);
         String dataString = sdf.format(pData);
 
-        Cursor mCount= bd.rawQuery("select max(id), valor_novo from Log_registro WHERE DATE(data_alteracao) <= DATE('" + dataString + "') and item_alterado = 'C'", null);
+        Cursor mCount= bd.rawQuery("select max(id), valor_novo from Log_registro WHERE DATE(data_alteracao) < DATE('" + dataString + "') and item_alterado = 'C'", null);
         mCount.moveToFirst();
         int count= mCount.getInt(1);
         mCount.close();
@@ -111,7 +111,7 @@ public class BDUsuario {
         sdf.setLenient(false);
         String dataString = sdf.format(pData);
 
-        Cursor mCount= bd.rawQuery( "select max(id), valor_novo from log_registro where log_registro.item_alterado = 'R' AND DATE(data_alteracao) <= DATE('" + dataString + "')", null);
+        Cursor mCount= bd.rawQuery( "select max(id), valor_novo from log_registro where log_registro.item_alterado = 'R' AND DATE(data_alteracao) < DATE('" + dataString + "')", null);
         mCount.moveToFirst();
         int count= mCount.getInt(1);
         mCount.close();

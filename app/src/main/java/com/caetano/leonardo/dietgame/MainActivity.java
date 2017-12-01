@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity
                                     verificaLogin();
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
                             }
                             });
@@ -252,7 +254,29 @@ public class MainActivity extends AppCompatActivity
         carregaProgressBar(data);
         calculaMedalha();
 
-        verificaLogin();
+        try {
+            verificaLogin();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        AlertDialog alerta;
+        //Cria o gerador do AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //define o titulo
+        builder.setTitle("Atenção");
+        //define a mensagem
+        builder.setMessage("O espaço de armazenamento do aplicativo está ficando cheio, faça login no facebook para que possamos guardar suas informações, cao contrário teremos que deletar as mesmas");
+        //define um botão como positivo
+        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface arg0, int arg1) {
+
+            }
+        });
+        //cria o AlertDialog
+        alerta = builder.create();
+        //Exibe
+        alerta.show();
 
     }
 
@@ -322,7 +346,7 @@ public class MainActivity extends AppCompatActivity
 
     public void carregaProgressBar(Date pData){
 
-        Log.i("Teste",pData.toString());
+        Log.i("Teste DATA",pData.toString());
 
         //=========================construção das progress Bar=========================
         bdUsuario = new BDUsuario(this);
@@ -354,6 +378,7 @@ public class MainActivity extends AppCompatActivity
         Button btnData = (Button) findViewById(R.id.btnPesquisaData);
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         btnData.setText(df.format(pData));
+        calculaMedalha();
     }
 
     public void MudaData(View v){
@@ -384,6 +409,7 @@ public class MainActivity extends AppCompatActivity
 
         totalFinal = (rCaloria + rRefeicoes) / 2;
 
+        Log.i("Porcentagem", String.valueOf(totalFinal));
 
         if(totalFinal <= 30 ){
             img.setImageResource(R.drawable.bronze_grande);
@@ -406,17 +432,13 @@ public class MainActivity extends AppCompatActivity
     private boolean reauth = false;
     private static final String KEY = "reauth";
 
-    public void verificaLogin(){
+    public void verificaLogin() throws ParseException {
 
         Profile profile = Profile.getCurrentProfile().getCurrentProfile();
         if(profile != null){
             btnCom.setVisibility(View.VISIBLE);
             btnLogin.setVisibility(View.GONE);
             Log.i("login ", "coloquei invisivel login");
-            bdUsuario = new BDUsuario(this);
-
-            bdUsuario.insertIdUsuario(Integer.parseInt(profile.getId()));
-
 
         }else{
             btnCom.setVisibility(View.GONE);
@@ -465,7 +487,7 @@ public class MainActivity extends AppCompatActivity
         }else{
             Mensagem = "Muito Bem";
             Descricao = "Paarabéns!!!! Continue mantendo sua dieta assim os resultados serão ótimos ";
-            imgLink = "https://drive.google.com/open?id=1KWzAy-H6a4fmAs9ArC44C9-813xOWcVH";
+            imgLink = "https://drive.google.com/open?id=1R_8vi6wiZGQzYFbnH6jpH6SxoVSYt2Xh";
         }
 
         if (ShareDialog.canShow(ShareLinkContent.class)) {
@@ -539,11 +561,36 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-    //metodos REST
-    public void sendJson(View view) throws ParseException {
-
+   /* public void chamaservico(View view) throws ParseException {
         int pAno = 2017;
         int pMes = 11;
+        int pDia = 01;
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.MONTH, pMes);
+        calendar.set(Calendar.YEAR, pAno);
+        calendar.set(Calendar.DAY_OF_MONTH,pDia);
+        Date date = calendar.getTime();
+
+        bdUsuario = new BDUsuario(this);
+        bdRegistro = new BDRegistro(this);
+
+        int IDU = 1;//bdUsuario.buscaIdUsuario();
+
+        List<registrosDTO> lista = bdRegistro.buscaAcumulado(date, IDU);
+
+        String json = generateJSON(lista);
+
+        callServer("send-json", json);
+
+    }*/
+
+    /*//metodos REST
+    public void sendJson() throws ParseException {
+
+        int pAno = 2017;
+        int pMes = 9;
         int pDia = 01;
 
         Calendar calendar = Calendar.getInstance();
@@ -560,18 +607,18 @@ public class MainActivity extends AppCompatActivity
 
         List<registrosDTO> lista = bdRegistro.buscaAcumulado(date, IDU);
 
-        /* json = generateJSON(lista);
+        String json = generateJSON(lista);
 
-        callServer("send-json", json);*/
+        callServer("send-json", json);
     }
 
 
-    /*public void getJson(View view){
+    public void getJson(View view){
         callServer("get-json", "");
     }*/
 
 
-    /*private String generateJSON(List<registrosDTO> lista){
+   /* private String generateJSON(List<registrosDTO> lista){
 
         JSONArray ja = new JSONArray();
 
@@ -593,49 +640,11 @@ public class MainActivity extends AppCompatActivity
     }*/
 
 
-   /* private Carro degenerateJSON(String data){
-        Carro carro = new Carro();
-
-        try{
-            JSONObject jo = new JSONObject(data);
-            JSONArray ja;
-
-            carro.setMarca(jo.getString("marca"));
-            carro.setModelo(jo.getString("modelo"));
-            carro.setPotencias(new ArrayList<Potencia>());
-
-            jo.put("marca", carro.getMarca());
-            jo.put("modelo", carro.getModelo());
-
-            ja = jo.getJSONArray("potencias");
-            for(int i = 0, tam = ja.length(); i < tam; i++){
-
-                Potencia p = new Potencia();
-                p.setMotor(ja.getJSONObject(i).getDouble("motor"));
-                p.setCavalos(ja.getJSONObject(i).getInt("cavalos"));
-
-                carro.getPotencias().add(p);
-            }
-
-            // APRESENTA��O
-            Log.i("Script", "Marca: "+carro.getMarca());
-            Log.i("Script", "Modelo: "+carro.getModelo());
-            for(int i = 0, tam = carro.getPotencias().size(); i < tam; i++){
-                Log.i("Script", "Motor: "+carro.getPotencias().get(i).getMotor());
-                Log.i("Script", "Cavalos: "+carro.getPotencias().get(i).getCavalos());
-            }
-
-        }
-        catch(JSONException e){ e.printStackTrace(); }
-
-        return(carro);
-    }*/
-
-    @SuppressLint("NewApi")
+  /*  @SuppressLint("NewApi")
     private void callServer(final String method, final String data){
         new Thread(){
-            public void run(){
-                String answer = HttpConnection.getSetDataWeb("http://www.villopim.com.br/android/json/process.php", method, data);
+            public void run(){;
+                String answer = HttpConnection.getSetDataWeb("http://192.168.0.104:3000/registros", method, data);
 
                 Log.i("Script", "ANSWER: "+answer);
 
@@ -644,6 +653,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }.start();
-    }
+    }*/
 
 }

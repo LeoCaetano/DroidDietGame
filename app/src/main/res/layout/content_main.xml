@@ -71,7 +71,7 @@
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:src="@drawable/ouro_grande"
         android:layout_below="@+id/btnPesquisaData"
-        android:layout_above="@+id/txtQTDRefeicao" />
+        android:layout_above="@+id/txtQTDRefeicao"/>
 
 
 
@@ -94,6 +94,6 @@
         android:text="  connect_with_facebook"
         android:layout_below="@+id/btnCompartilha"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="1dp" />
+        android:layout_marginTop="48dp" />
 
 </RelativeLayout>
